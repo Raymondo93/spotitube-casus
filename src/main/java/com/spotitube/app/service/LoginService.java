@@ -1,5 +1,6 @@
 package com.spotitube.app.service;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -14,6 +15,7 @@ import java.util.Date;
 
 
 @Path("/login")
+@RequestScoped
 public class LoginService {
 
 

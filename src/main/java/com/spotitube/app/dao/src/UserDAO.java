@@ -33,9 +33,7 @@ public class UserDAO implements IUserDAO {
                return true;
             }
             set.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (NoDatabaseConnectionException e) {
+        } catch (SQLException | NoDatabaseConnectionException e) {
             e.printStackTrace();
         }
         throw new UserOrPasswordFailException("No user found on " + dto.getUser());
@@ -50,9 +48,7 @@ public class UserDAO implements IUserDAO {
             statement.setString(1, dto.getToken());
             statement.setString(2, dto.getUser());
             statement.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (NoDatabaseConnectionException e) {
+        } catch (SQLException | NoDatabaseConnectionException e) {
             e.printStackTrace();
         }
     }

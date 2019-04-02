@@ -7,8 +7,14 @@ import com.spotitube.app.model.IUserModel;
 
 public interface IUserDAO {
 
+    /**
+     *  {@inheritDoc}
+     */
     boolean loginUser(UserLoginDTO dto) throws UserOrPasswordFailException;
 
+    /**
+        {@inheritDoc}
+     */
     void saveUserToken(UserLoginResponseDTO dto);
 
 }

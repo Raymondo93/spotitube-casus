@@ -4,13 +4,11 @@ import com.spotitube.app.dao.IDatabaseConnection;
 import com.spotitube.app.dao.IUserHasPlaylistDAO;
 import com.spotitube.app.exceptions.NoDatabaseConnectionException;
 import com.spotitube.app.model.IPlaylistModel;
-import com.spotitube.app.model.src.PlaylistModel;
 
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +28,7 @@ public class UserHasPlaylistDAO implements IUserHasPlaylistDAO {
             statement.setString(2, token);
             statement.execute();
             return true;
-        } catch(SQLException e) {
-            e.printStackTrace();
-        } catch (NoDatabaseConnectionException e) {
+        } catch(SQLException | NoDatabaseConnectionException e) {
             e.printStackTrace();
         }
         return false;
@@ -42,24 +38,22 @@ public class UserHasPlaylistDAO implements IUserHasPlaylistDAO {
         // TODO -> create query
         String query = " ";
         List<IPlaylistModel> playlists = new ArrayList<>();
-        try(
-            Connection connection = databaseConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet set = statement.executeQuery()
-        ) {
-            if(!set.first()) {
-                return playlists;
-            }
-            while(set.next()) {
-                playlists.add(new PlaylistModel(set.getInt("id"), set.getString("name"),
-                    set.getString("owner"), set.getInt("playlistLength")));
-            }
-            return playlists;
-        } catch(SQLException e) {
-            e.printStackTrace();
-        } catch (NoDatabaseConnectionException e) {
-            e.printStackTrace();
-        }
+//        try(
+//            Connection connection = databaseConnection.getConnection();
+//            PreparedStatement statement = connection.prepareStatement(query);
+//            ResultSet set = statement.executeQuery()
+//        ) {
+//            if(!set.first()) {
+//                return playlists;
+//            }
+//            while(set.next()) {
+//                playlists.add(new PlaylistModel(set.getInt("id"), set.getString("name"),
+//                    set.getString("owner"), set.getInt("playlistLength")));
+//            }
+//            return playlists;
+//        } catch(SQLException e | NoDatabaseConnectionException e) {
+//            e.printStackTrace();
+//        }
         return playlists;
     }
 
@@ -73,9 +67,7 @@ public class UserHasPlaylistDAO implements IUserHasPlaylistDAO {
             statement.setInt(2, playlistId);
             statement.execute();
             return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (NoDatabaseConnectionException e) {
+        } catch (SQLException | NoDatabaseConnectionException e) {
             e.printStackTrace();
         }
         return false;
