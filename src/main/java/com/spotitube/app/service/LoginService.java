@@ -1,5 +1,6 @@
 package com.spotitube.app.service;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
@@ -16,18 +17,22 @@ import java.util.Date;
 public class LoginService {
 
 
+    @Inject
     private IUserDAO userDAO;
 
+    /**
+     * Login user
+     * @param dto -> Data transfer object
+     * @return -> DTO LoginResponse for frontend
+     */
     @POST
     @Consumes("application/json")
     @Produces("application/json")
     public Response loginUser(UserLoginDTO dto) {
-        System.out.println(dto);
-        UserLoginResponseDTO loginResponseDTO;
+        UserLoginResponseDTO loginResponseDTO = new UserLoginResponseDTO();
         userDAO = new UserDAO();
         try {
             if (userDAO.loginUser(dto)) {
-                loginResponseDTO = new UserLoginResponseDTO();
                 loginResponseDTO.setUser(dto.getUser());
                 loginResponseDTO.setToken(generateToken(dto.getUser()));
                 userDAO.saveUserToken(loginResponseDTO);
@@ -36,17 +41,18 @@ public class LoginService {
         } catch (UserOrPasswordFailException e) {
             e.printStackTrace();
         }
-        return getResponse(null, 401);
+        return Response.status(401).entity(loginResponseDTO).build();
     }
 
+    /**
+     * Generate token by current date and username
+     * @param username -> current user who logged in
+     * @return -> a token
+     */
     private String generateToken(String username) {
         Date date = new Date();
         long millis = date.getTime();
         return username + millis;
-    }
-
-    private Response getResponse(JSONObject responseData, int httpStatus) {
-        return Response.status(httpStatus).entity(responseData).build();
     }
 
 }
