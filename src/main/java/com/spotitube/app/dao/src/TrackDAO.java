@@ -2,6 +2,7 @@ package com.spotitube.app.dao.src;
 
 import com.spotitube.app.dao.IDatabaseConnection;
 import com.spotitube.app.dao.ITrackDAO;
+import com.spotitube.app.exceptions.NoDatabaseConnectionException;
 import com.spotitube.app.model.ITrackModel;
 import com.spotitube.app.model.src.TrackModel;
 
@@ -32,6 +33,8 @@ public class TrackDAO implements ITrackDAO {
             }
             resultSet.close();
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (NoDatabaseConnectionException e) {
             e.printStackTrace();
         }
         return tracks;

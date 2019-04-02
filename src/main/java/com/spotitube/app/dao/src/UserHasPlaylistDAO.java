@@ -2,6 +2,7 @@ package com.spotitube.app.dao.src;
 
 import com.spotitube.app.dao.IDatabaseConnection;
 import com.spotitube.app.dao.IUserHasPlaylistDAO;
+import com.spotitube.app.exceptions.NoDatabaseConnectionException;
 import com.spotitube.app.model.IPlaylistModel;
 import com.spotitube.app.model.src.PlaylistModel;
 
@@ -31,6 +32,8 @@ public class UserHasPlaylistDAO implements IUserHasPlaylistDAO {
             return true;
         } catch(SQLException e) {
             e.printStackTrace();
+        } catch (NoDatabaseConnectionException e) {
+            e.printStackTrace();
         }
         return false;
     }
@@ -54,6 +57,8 @@ public class UserHasPlaylistDAO implements IUserHasPlaylistDAO {
             return playlists;
         } catch(SQLException e) {
             e.printStackTrace();
+        } catch (NoDatabaseConnectionException e) {
+            e.printStackTrace();
         }
         return playlists;
     }
@@ -69,6 +74,8 @@ public class UserHasPlaylistDAO implements IUserHasPlaylistDAO {
             statement.execute();
             return true;
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (NoDatabaseConnectionException e) {
             e.printStackTrace();
         }
         return false;

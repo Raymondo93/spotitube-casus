@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import com.spotitube.app.dao.IDatabaseConnection;
 import com.spotitube.app.dao.IPlaylistDAO;
+import com.spotitube.app.exceptions.NoDatabaseConnectionException;
 import com.spotitube.app.model.IPlaylistModel;
 import com.spotitube.app.model.src.PlaylistModel;
 
@@ -43,6 +44,8 @@ public class PlaylistDAO implements IPlaylistDAO {
             return playlists;
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (NoDatabaseConnectionException e) {
+            e.printStackTrace();
         }
         return playlists;
     }
@@ -63,6 +66,8 @@ public class PlaylistDAO implements IPlaylistDAO {
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (NoDatabaseConnectionException e) {
+            e.printStackTrace();
         }
         return false;
     }
@@ -81,6 +86,8 @@ public class PlaylistDAO implements IPlaylistDAO {
             statement.execute();
             return true;
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (NoDatabaseConnectionException e) {
             e.printStackTrace();
         }
         return false;

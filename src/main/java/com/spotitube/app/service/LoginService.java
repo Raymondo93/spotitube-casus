@@ -1,13 +1,12 @@
 package com.spotitube.app.service;
 
-import javax.inject.Inject;
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.spotitube.app.DTO.UserLoginDTO;
 import com.spotitube.app.DTO.UserLoginResponseDTO;
 import com.spotitube.app.dao.IUserDAO;
+import com.spotitube.app.dao.src.UserDAO;
 import com.spotitube.app.exceptions.UserOrPasswordFailException;
 import org.json.JSONObject;
 import java.util.Date;
@@ -16,18 +15,21 @@ import java.util.Date;
 @Path("/login")
 public class LoginService {
 
-    @Inject
+
     private IUserDAO userDAO;
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    @Produces("application/json")
     public Response loginUser(UserLoginDTO dto) {
-        System.out.println("komt die hier?");
+        System.out.println(dto);
         UserLoginResponseDTO loginResponseDTO;
+        userDAO = new UserDAO();
         try {
             if (userDAO.loginUser(dto)) {
-                loginResponseDTO = new UserLoginResponseDTO(generateToken(dto.getUsername()), dto.getUsername());
+                loginResponseDTO = new UserLoginResponseDTO();
+                loginResponseDTO.setUser(dto.getUser());
+                loginResponseDTO.setToken(generateToken(dto.getUser()));
                 userDAO.saveUserToken(loginResponseDTO);
                 return Response.ok().entity(loginResponseDTO).build();
             }

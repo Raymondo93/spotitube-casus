@@ -1,14 +1,13 @@
 package com.spotitube.app.dao.src;
 
 import javax.enterprise.inject.Default;
-import javax.inject.Inject;
 
 import com.spotitube.app.DTO.UserLoginDTO;
 import com.spotitube.app.DTO.UserLoginResponseDTO;
 import com.spotitube.app.dao.IDatabaseConnection;
 import com.spotitube.app.dao.IUserDAO;
+import com.spotitube.app.exceptions.NoDatabaseConnectionException;
 import com.spotitube.app.exceptions.UserOrPasswordFailException;
-import com.spotitube.app.model.IUserModel;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,15 +17,16 @@ import java.sql.SQLException;
 @Default
 public class UserDAO implements IUserDAO {
 
-    @Inject private IDatabaseConnection databaseConnection;
+    private IDatabaseConnection databaseConnection;
 
     public boolean loginUser(UserLoginDTO dto) throws UserOrPasswordFailException {
         String query = "SELECT 1 FROM user WHERE username = ? AND password = ?;";
+        databaseConnection = new DatabaseConnection();
         try(
             Connection connection = databaseConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
         ){
-            statement.setString(1, dto.getUsername());
+            statement.setString(1, dto.getUser());
             statement.setString(2, dto.getPassword());
             ResultSet set = statement.executeQuery();
             if(set.first() && set.getInt(1) == 1) {
@@ -35,8 +35,10 @@ public class UserDAO implements IUserDAO {
             set.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (NoDatabaseConnectionException e) {
+            e.printStackTrace();
         }
-        throw new UserOrPasswordFailException("No user found on " + dto.getUsername());
+        throw new UserOrPasswordFailException("No user found on " + dto.getUser());
     }
 
     public void saveUserToken(UserLoginResponseDTO dto) {
@@ -46,9 +48,11 @@ public class UserDAO implements IUserDAO {
             PreparedStatement statement = connection.prepareStatement(query);
         ) {
             statement.setString(1, dto.getToken());
-            statement.setString(2, dto.getUsername());
+            statement.setString(2, dto.getUser());
             statement.execute();
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (NoDatabaseConnectionException e) {
             e.printStackTrace();
         }
     }

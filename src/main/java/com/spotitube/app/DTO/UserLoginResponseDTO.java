@@ -3,11 +3,10 @@ package com.spotitube.app.DTO;
 public class UserLoginResponseDTO {
 
     private String token;
-    private String username;
+    private String user;
 
-    public UserLoginResponseDTO(String token, String username){
-        this.token = token;
-        this.username = username;
+    public UserLoginResponseDTO() {
+
     }
 
     public String getToken() {
@@ -18,11 +17,11 @@ public class UserLoginResponseDTO {
         this.token = token;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUser() {
+        return user;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUser(String user) {
+        this.user = user;
     }
 }
