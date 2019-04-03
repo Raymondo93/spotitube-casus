@@ -22,7 +22,7 @@ public interface IPlaylistDAO {
 
     /**
      * Update the name of a playlist
-     * @param playlistModel -> The playlist who's name has to be changed
+     * @param dto -> The playlist who's name has to be changed
      */
-    boolean updatePlaylistNameInDatabase(IPlaylistModel playlistModel);
+    boolean updatePlaylistNameInDatabase(PlaylistDTO dto);
 }

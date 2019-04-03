@@ -17,7 +17,7 @@ public class UserHasPlaylistDAO implements IUserHasPlaylistDAO {
     @Inject IDatabaseConnection databaseConnection;
 
     public boolean addPlaylistToUser(PlaylistDTO dto, String token){
-        String query = "INSERT INTO user_has_playlist SELECT username, (SELECT id FROM playlist WHERE `name` = ?) FROM `user` WHERE token = ?;";
+        String query = "INSERT INTO user_has_playlist (username, playlist_id) SELECT username, (SELECT id FROM playlist WHERE name = ?) FROM user WHERE token = ?;";
         try (
             Connection connection = databaseConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query)

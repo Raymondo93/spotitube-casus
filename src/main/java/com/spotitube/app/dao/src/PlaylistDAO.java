@@ -73,14 +73,15 @@ public class PlaylistDAO implements IPlaylistDAO {
     /**
      *  {@inheritDoc}
      */
-    public boolean updatePlaylistNameInDatabase(IPlaylistModel playlistModel) {
+    public boolean updatePlaylistNameInDatabase(PlaylistDTO dto) {
         String query = "UPDATE playlist SET name = ? WHERE id = ?;";
+        databaseConnection = new DatabaseConnection();
         try (
             Connection connection = databaseConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
         ) {
-            statement.setString(1, playlistModel.getName());
-            statement.setInt(2, playlistModel.getId());
+            statement.setString(1, dto.getName());
+            statement.setInt(2, dto.getId());
             statement.execute();
             return true;
         } catch (SQLException | NoDatabaseConnectionException e) {

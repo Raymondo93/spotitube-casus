@@ -55,31 +55,18 @@ public class PlaylistService {
     /**
      * Request to change the name of the playlist
      * @param token -> user token of session
-     * @param id -> playlist id
-     * @param name -> name of the playlist
-     * @param owner -> owner of playlist
      * @return Response with playlists of the current user.
      */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    public Response editPlaylist(
-        @QueryParam("token") String token,
-        @QueryParam("id") int id,
-        @QueryParam("name") String name,
-        @QueryParam("owner") boolean owner,
-        @QueryParam("tracks") List<String> tracks
-    ){
-//        JSONObject playlistResponse = new JSONObject();
-//        playlistModel.setId(id);
-//        playlistModel.setName(name);
-//        playlistModel.setOwner(owner);
-//        if(playlistDAO.updatePlaylistNameInDatabase(playlistModel)) {
-//            List<IPlaylistModel> playlists = userHasPlaylistDAO.getPlaylistsOfUser(token);
-//            return getResponse(playlistResponse, 200);
-//        }
-        return getResponse(null, 500);
+    public Response editPlaylist(PlaylistDTO dto, @PathParam("id") int id, @QueryParam("token") String token){
+        if(playlistDAO.updatePlaylistNameInDatabase(dto)){
+            PlaylistResponseDTO responseDTO = getPlaylists(token);
+            return Response.ok().entity(responseDTO).build();
+        }
+        return Response.status(500).build();
     }
 
     /**
