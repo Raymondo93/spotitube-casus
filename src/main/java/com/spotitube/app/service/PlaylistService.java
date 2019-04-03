@@ -21,7 +21,6 @@ import java.util.List;
 public class PlaylistService {
 
     @Inject private IPlaylistDAO playlistDAO;
-    private IPlaylistModel playlistModel;
     @Inject private IUserHasPlaylistDAO userHasPlaylistDAO;
 
     /**
@@ -32,15 +31,7 @@ public class PlaylistService {
     @GET
     @Produces("application/json")
     public Response getAllPlaylists(@QueryParam("token") String token) {
-        List<IPlaylistModel> playlists = playlistDAO.getPlaylists();
-        PlaylistDTO[] playlistArray = new PlaylistDTO[playlists.size()];
-        int playtime = 0;
-        for(int i = 0; i < playlistArray.length; ++i) {
-            String owner = token.equals(playlists.get(i).getOwnerName()) ? "true" : "false";
-            playlistArray[i] = new PlaylistDTO(playlists.get(i).getId(), playlists.get(i).getName(), owner, new TrackModel[0]);
-            playtime += playlists.get(i).getPlaylistLength();
-        }
-        PlaylistResponseDTO responseDTO = new PlaylistResponseDTO(playlistArray, playtime);
+        PlaylistResponseDTO responseDTO = getPlaylists(token);
         return Response.ok().entity(responseDTO).build();
     }
 
@@ -48,30 +39,17 @@ public class PlaylistService {
     /**
      * Request to add playlist to database and link to owner
      * @param token -> queryParameter usertoken
-     * @param id -> formParameter playlist id
-     * @param name -> formParameter playlist name
-     * @param owner -> formParameter playlist owner
      * @return response with playlists of the current user
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addPlaylist(
-        @QueryParam("token") String token,
-        @FormParam("id") int id,
-        @FormParam("name") String name,
-        @FormParam("owner") boolean owner
-        ) {
-        playlistModel.setId(id);
-        playlistModel.setName(name);
-        playlistModel.setOwner(owner);
-        JSONObject userPlaylistsResponse = new JSONObject();
-        if (playlistDAO.addPlaylistToDatabase(playlistModel, token)) {
-            userHasPlaylistDAO.addPlaylistToUser(playlistModel, token);
-            List<IPlaylistModel> playlists =  userHasPlaylistDAO.getPlaylistsOfUser(token);
-            return getResponse(userPlaylistsResponse, 201);
+    public Response addPlaylist(PlaylistDTO dto, @QueryParam("token") String token) {
+        if(playlistDAO.addPlaylistToDatabase(dto, token) && userHasPlaylistDAO.addPlaylistToUser(dto, token)){
+            PlaylistResponseDTO responseDTO = getPlaylists(token);
+            return Response.ok().entity(responseDTO).build();
         }
-        return getResponse(userPlaylistsResponse, 500);
+        return Response.status(500).build();
     }
 
     /**
@@ -93,15 +71,15 @@ public class PlaylistService {
         @QueryParam("owner") boolean owner,
         @QueryParam("tracks") List<String> tracks
     ){
-        JSONObject playlistResponse = new JSONObject();
-        playlistModel.setId(id);
-        playlistModel.setName(name);
-        playlistModel.setOwner(owner);
-        if(playlistDAO.updatePlaylistNameInDatabase(playlistModel)) {
-            List<IPlaylistModel> playlists = userHasPlaylistDAO.getPlaylistsOfUser(token);
-            return getResponse(playlistResponse, 200);
-        }
-        return getResponse(playlistResponse, 500);
+//        JSONObject playlistResponse = new JSONObject();
+//        playlistModel.setId(id);
+//        playlistModel.setName(name);
+//        playlistModel.setOwner(owner);
+//        if(playlistDAO.updatePlaylistNameInDatabase(playlistModel)) {
+//            List<IPlaylistModel> playlists = userHasPlaylistDAO.getPlaylistsOfUser(token);
+//            return getResponse(playlistResponse, 200);
+//        }
+        return getResponse(null, 500);
     }
 
     /**
@@ -115,22 +93,22 @@ public class PlaylistService {
     @Path("/{id}")
     public Response removePlaylist(@PathParam("id") int id, @QueryParam("token") String token) {
         if(userHasPlaylistDAO.deletePlaylistFromUser(id, token)) {
-            List<IPlaylistModel> playlistModels = playlistDAO.getPlaylists();
-            for(IPlaylistModel model: playlistModels) {
-                if(model.getOwnerName().equals(token)) {
-                    playlistModels.remove(model);
-                }
-            }
-            PlaylistDTO[] playlistDTOS = new PlaylistDTO[playlistModels.size()];
-            int playtime = 0;
-            for(int i = 0; i < playlistDTOS.length; ++i){
-                playlistDTOS[i] = new PlaylistDTO(playlistModels.get(i).getId(), playlistModels.get(i).getName(), "true", new TrackModel[0]);
-                playtime += playlistModels.get(i).getPlaylistLength();
-            }
-            PlaylistResponseDTO responseDTO = new PlaylistResponseDTO(playlistDTOS, playtime);
+            PlaylistResponseDTO responseDTO = getPlaylists(token);
             return Response.ok().entity(responseDTO).build();
         }
         return Response.status(500).build();
+    }
+
+    private PlaylistResponseDTO getPlaylists(String token) {
+        List<IPlaylistModel> playlistModels = playlistDAO.getPlaylists();
+        PlaylistDTO[] playlistDTOS = new PlaylistDTO[playlistModels.size()];
+        int playtime = 0;
+        for(int i = 0; i < playlistDTOS.length; ++i){
+            String owner = playlistModels.get(i).getOwnerName().equals(token) ? "true" : "false";
+            playlistDTOS[i] = new PlaylistDTO(playlistModels.get(i).getId(), playlistModels.get(i).getName() , "true", new TrackModel[0]);
+            playtime += playlistModels.get(i).getPlaylistLength();
+        }
+        return new PlaylistResponseDTO(playlistDTOS, playtime);
     }
 
     @GET

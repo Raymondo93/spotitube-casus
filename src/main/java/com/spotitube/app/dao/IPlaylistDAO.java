@@ -1,5 +1,6 @@
 package com.spotitube.app.dao;
 
+import com.spotitube.app.DTO.PlaylistDTO;
 import com.spotitube.app.model.IPlaylistModel;
 
 import java.util.List;
@@ -14,10 +15,10 @@ public interface IPlaylistDAO {
 
     /**
      * Add a new playlist for a user in the database
-     * @param playlistModel -> Playlist POJO
+     * @param dto -> Playlist Data Transfer Object
      * @param token -> usertoken
      */
-    boolean addPlaylistToDatabase(IPlaylistModel playlistModel, String token);
+    boolean addPlaylistToDatabase(PlaylistDTO dto, String token);
 
     /**
      * Update the name of a playlist

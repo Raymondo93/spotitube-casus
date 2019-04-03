@@ -1,30 +1,28 @@
 package com.spotitube.app.dao.src;
 
+import com.spotitube.app.DTO.PlaylistDTO;
 import com.spotitube.app.dao.IDatabaseConnection;
 import com.spotitube.app.dao.IUserHasPlaylistDAO;
 import com.spotitube.app.exceptions.NoDatabaseConnectionException;
-import com.spotitube.app.model.IPlaylistModel;
 
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Default
 public class UserHasPlaylistDAO implements IUserHasPlaylistDAO {
 
     @Inject IDatabaseConnection databaseConnection;
 
-    public boolean addPlaylistToUser(IPlaylistModel playlistModel, String token){
-        String query = "INSERT INTO user_has_playlist SELECT username, ? FROM user WHERE token = ?;";
+    public boolean addPlaylistToUser(PlaylistDTO dto, String token){
+        String query = "INSERT INTO user_has_playlist SELECT username, (SELECT id FROM playlist WHERE `name` = ?) FROM `user` WHERE token = ?;";
         try (
             Connection connection = databaseConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query)
         ){
-            statement.setInt(1, playlistModel.getId());
+            statement.setString(1, dto.getName());
             statement.setString(2, token);
             statement.execute();
             return true;
@@ -34,31 +32,9 @@ public class UserHasPlaylistDAO implements IUserHasPlaylistDAO {
         return false;
     }
 
-    public List<IPlaylistModel> getPlaylistsOfUser(String token) {
-        // TODO -> create query
-        String query = " ";
-        List<IPlaylistModel> playlists = new ArrayList<>();
-//        try(
-//            Connection connection = databaseConnection.getConnection();
-//            PreparedStatement statement = connection.prepareStatement(query);
-//            ResultSet set = statement.executeQuery()
-//        ) {
-//            if(!set.first()) {
-//                return playlists;
-//            }
-//            while(set.next()) {
-//                playlists.add(new PlaylistModel(set.getInt("id"), set.getString("name"),
-//                    set.getString("owner"), set.getInt("playlistLength")));
-//            }
-//            return playlists;
-//        } catch(SQLException e | NoDatabaseConnectionException e) {
-//            e.printStackTrace();
-//        }
-        return playlists;
-    }
 
     public boolean deletePlaylistFromUser(int playlistId, String token) {
-        String query = "DELETE FROM user_has_playlist WHERE username = (SELECT username FROM user WHERE token = ?) AND playlist_id = ?;";
+        String query = "DELETE FROM user_has_playlist WHERE username = (SELECT username FROM `user` WHERE token = ?) AND playlist_id = ?;";
         try (
             Connection connection = databaseConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query)

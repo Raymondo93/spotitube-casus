@@ -32,7 +32,6 @@ public class LoginService {
     @Produces("application/json")
     public Response loginUser(UserLoginDTO dto) {
         UserLoginResponseDTO loginResponseDTO = new UserLoginResponseDTO();
-        userDAO = new UserDAO();
         try {
             if (userDAO.loginUser(dto)) {
                 loginResponseDTO.setUser(dto.getUser());
