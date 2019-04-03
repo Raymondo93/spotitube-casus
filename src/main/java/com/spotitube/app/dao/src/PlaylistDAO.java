@@ -20,6 +20,7 @@ import java.util.List;
 @Default
 public class PlaylistDAO implements IPlaylistDAO {
 
+    @Inject
     private IDatabaseConnection databaseConnection;
 
     /**
@@ -32,7 +33,6 @@ public class PlaylistDAO implements IPlaylistDAO {
             "\tleft join track on track.id = playlist_has_track.track_id\n" +
             "group by playlist.id";
         List<IPlaylistModel> playlists = new ArrayList<>();
-        databaseConnection = new DatabaseConnection();
         try (
             Connection connection = databaseConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
@@ -55,7 +55,6 @@ public class PlaylistDAO implements IPlaylistDAO {
      */
     public boolean addPlaylistToDatabase(PlaylistDTO dto, String token) {
         String queryPlaylist = "INSERT INTO playlist(name, owner) SELECT ?, username FROM user WHERE token = ?;";
-        databaseConnection = new DatabaseConnection();
         try (
             Connection connection = databaseConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(queryPlaylist);
@@ -75,7 +74,6 @@ public class PlaylistDAO implements IPlaylistDAO {
      */
     public boolean updatePlaylistNameInDatabase(PlaylistDTO dto) {
         String query = "UPDATE playlist SET name = ? WHERE id = ?;";
-        databaseConnection = new DatabaseConnection();
         try (
             Connection connection = databaseConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query);

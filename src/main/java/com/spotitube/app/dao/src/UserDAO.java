@@ -1,6 +1,7 @@
 package com.spotitube.app.dao.src;
 
 import javax.enterprise.inject.Default;
+import javax.inject.Inject;
 
 import com.spotitube.app.DTO.UserLoginDTO;
 import com.spotitube.app.DTO.UserLoginResponseDTO;
@@ -17,11 +18,11 @@ import java.sql.SQLException;
 @Default
 public class UserDAO implements IUserDAO {
 
+    @Inject
     private IDatabaseConnection databaseConnection;
 
     public boolean loginUser(UserLoginDTO dto) throws UserOrPasswordFailException {
         String query = "SELECT 1 FROM user WHERE username = ? AND password = ?;";
-        databaseConnection = new DatabaseConnection();
         try(
             Connection connection = databaseConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
