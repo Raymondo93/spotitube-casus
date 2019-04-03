@@ -21,9 +21,20 @@ public class TrackDAO implements ITrackDAO {
 
     public List<TrackDTO> getAllTracksNotInPlaylist(int playlistId) {
         String query = "SELECT track.id, track.title, track.performer, track.duration, track.album, track.playcount," +
-            "    track.publication_date, track.description, track.offline_available, playlist_has_track.playlist_id\n" +
+            "    track.publication_date, track.description, track.offline_available\n" +
             "FROM track left join playlist_has_track ON track.id = playlist_has_track.track_id\n" +
             "WHERE playlist_has_track.playlist_id != ? OR playlist_has_track.playlist_id is null";
+        return getTracks(query, playlistId);
+    }
+
+    public List<TrackDTO> getTracksFromPlaylist(int playlistId) {
+        String query = "SELECT track.id, track.title, track.performer, track.duration, track.album, track.playcount, track.publication_date, track.description, track.offline_available \n" +
+            "FROM track left join playlist_has_track ON track.id = playlist_has_track.track_id\n" +
+            "WHERE playlist_has_track.playlist_id = ?\n";
+        return getTracks(query, playlistId);
+    }
+
+    private List<TrackDTO> getTracks(String query, int playlistId) {
         List<TrackDTO> tracks = new ArrayList<>();
         try(
             Connection connection = databaseConnection.getConnection();
@@ -42,5 +53,6 @@ public class TrackDAO implements ITrackDAO {
             e.printStackTrace();
         }
         return tracks;
+
     }
 }

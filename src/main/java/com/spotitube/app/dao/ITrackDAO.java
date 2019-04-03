@@ -7,4 +7,6 @@ import java.util.List;
 public interface ITrackDAO {
 
     List<TrackDTO> getAllTracksNotInPlaylist(int playlistId);
+
+    List<TrackDTO> getTracksFromPlaylist(int playlistId);
 }
