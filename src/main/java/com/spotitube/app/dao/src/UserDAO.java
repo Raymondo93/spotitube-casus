@@ -33,7 +33,6 @@ public class UserDAO implements IUserDAO {
             if(set.first() && set.getInt(1) == 1) {
                return true;
             }
-            set.close();
         } catch (SQLException | NoDatabaseConnectionException e) {
             e.printStackTrace();
         }
