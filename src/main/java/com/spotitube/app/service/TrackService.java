@@ -12,7 +12,7 @@ import java.util.List;
 @Path("/track")
 public class TrackService {
 
-    @Inject private ITrackDAO trackDAO;
+    private ITrackDAO trackDAO;
 
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
@@ -30,6 +30,11 @@ public class TrackService {
                 trackDTOS.get(i).isOfflineAvailable());
         }
         return Response.ok().entity(responseDTO).build();
+    }
+
+    @Inject
+    public void setTrackDAO(ITrackDAO trackDAO) {
+        this.trackDAO = trackDAO;
     }
 
 }
