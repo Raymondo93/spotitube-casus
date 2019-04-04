@@ -19,6 +19,9 @@ public class LoginService {
 
     private IUserDAO userDAO;
 
+    @Inject
+    public void setLoginDAO(IUserDAO userDAO) {this.userDAO = userDAO;}
+
     /**
      * Login user
      * @param dto -> Data transfer object
@@ -42,8 +45,6 @@ public class LoginService {
         return Response.status(401).entity(loginResponseDTO).build();
     }
 
-    @Inject
-    public void setLoginDAO(IUserDAO userDAO) {this.userDAO = userDAO;}
 
     /**
      * Generate token by current date and username

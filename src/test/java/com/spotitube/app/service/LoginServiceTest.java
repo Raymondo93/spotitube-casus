@@ -41,4 +41,5 @@ public class LoginServiceTest {
         // verify
         Assertions.assertEquals(201, loginResponse.getStatus());
     }
+
 }
