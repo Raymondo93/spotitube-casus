@@ -14,7 +14,7 @@ import java.sql.SQLException;
 @Default
 public class UserHasPlaylistDAO implements IUserHasPlaylistDAO {
 
-    @Inject IDatabaseConnection databaseConnection;
+    private IDatabaseConnection databaseConnection;
 
     public boolean addPlaylistToUser(PlaylistDTO dto, String token){
         String query = "INSERT INTO user_has_playlist (username, playlist_id) SELECT username, (SELECT id FROM playlist WHERE name = ?) FROM user WHERE token = ?;";
@@ -49,4 +49,7 @@ public class UserHasPlaylistDAO implements IUserHasPlaylistDAO {
         return false;
     }
 
+    @Inject public void setDatabaseConnection(IDatabaseConnection databaseConnection) {
+        this.databaseConnection = databaseConnection;
+    }
 }

@@ -17,7 +17,6 @@ import java.util.Date;
 public class LoginService {
 
 
-    @Inject
     private IUserDAO userDAO;
 
     /**
@@ -42,6 +41,9 @@ public class LoginService {
         }
         return Response.status(401).entity(loginResponseDTO).build();
     }
+
+    @Inject
+    public void setLoginDAO(IUserDAO userDAO) {this.userDAO = userDAO;}
 
     /**
      * Generate token by current date and username

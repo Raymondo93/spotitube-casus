@@ -17,7 +17,7 @@ import java.util.List;
 @Default
 public class TrackDAO implements ITrackDAO {
 
-    @Inject private IDatabaseConnection databaseConnection;
+    private IDatabaseConnection databaseConnection;
 
     public List<TrackDTO> getAllTracksNotInPlaylist(int playlistId) {
         String query = "SELECT track.id, track.title, track.performer, track.duration, track.album, track.playcount," +
@@ -53,6 +53,10 @@ public class TrackDAO implements ITrackDAO {
             e.printStackTrace();
         }
         return tracks;
-
     }
+
+    @Inject public void setDatabaseConnection(IDatabaseConnection databaseConnection){
+        this.databaseConnection = databaseConnection;
+    }
+
 }

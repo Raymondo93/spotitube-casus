@@ -14,7 +14,6 @@ import java.sql.SQLException;
 @Default
 public class PlaylistHasTrackDAO implements IPlaylistHasTrackDAO {
 
-    @Inject
     private IDatabaseConnection databaseConnection;
 
     public PlaylistHasTrackDAO() {
@@ -44,7 +43,10 @@ public class PlaylistHasTrackDAO implements IPlaylistHasTrackDAO {
             e.printStackTrace();
         }
         return false;
+    }
 
+    @Inject public void setDatabaseConnection(IDatabaseConnection databaseConnection) {
+        this.databaseConnection = databaseConnection;
     }
 
 }

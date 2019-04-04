@@ -20,11 +20,11 @@ import java.util.List;
 @RequestScoped
 public class PlaylistService {
 
-    @Inject private IPlaylistDAO playlistDAO;
-    @Inject private IUserHasPlaylistDAO userHasPlaylistDAO;
-    @Inject private ITrackDAO trackDAO;
-    @Inject private IPlaylistHasTrackDAO playlistHasTrackDAO;
-    @Inject private TrackModel trackModel;
+    private IPlaylistDAO playlistDAO;
+    private IUserHasPlaylistDAO userHasPlaylistDAO;
+    private ITrackDAO trackDAO;
+    private IPlaylistHasTrackDAO playlistHasTrackDAO;
+
 
     /**
      * Request from frontend to get all playlists
@@ -161,4 +161,21 @@ public class PlaylistService {
         }
         return new PlaylistResponseDTO(playlistDTOS, playtime);
     }
+
+    @Inject void setPlaylistDAO(IPlaylistDAO playlistDAO) {
+        this.playlistDAO = playlistDAO;
+    }
+
+    @Inject void setUserHasPlaylistDAO(IUserHasPlaylistDAO userHasPlaylistDAO) {
+        this.userHasPlaylistDAO = userHasPlaylistDAO;
+    }
+
+    @Inject void setTrackDAO(ITrackDAO trackDAO) {
+        this.trackDAO = trackDAO;
+    }
+
+    @Inject void setPlaylistHasTrackDAO(IPlaylistHasTrackDAO playlistHasTrackDAO) {
+        this.playlistHasTrackDAO = playlistHasTrackDAO;
+    }
+
 }

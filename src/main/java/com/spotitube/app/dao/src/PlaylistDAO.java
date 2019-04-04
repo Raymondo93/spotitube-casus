@@ -20,7 +20,6 @@ import java.util.List;
 @Default
 public class PlaylistDAO implements IPlaylistDAO {
 
-    @Inject
     private IDatabaseConnection databaseConnection;
 
     /**
@@ -86,5 +85,9 @@ public class PlaylistDAO implements IPlaylistDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Inject void setDatabaseConnection(IDatabaseConnection databaseConnection) {
+        this.databaseConnection = databaseConnection;
     }
 }
