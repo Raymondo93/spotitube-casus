@@ -3,7 +3,6 @@ package com.spotitube.app.dao;
 import com.spotitube.app.DTO.UserLoginDTO;
 import com.spotitube.app.DTO.UserLoginResponseDTO;
 import com.spotitube.app.exceptions.UserOrPasswordFailException;
-import com.spotitube.app.model.IUserModel;
 
 public interface IUserDAO {
 
@@ -15,6 +14,6 @@ public interface IUserDAO {
     /**
         {@inheritDoc}
      */
-    void saveUserToken(UserLoginResponseDTO dto);
+    boolean saveUserToken(UserLoginResponseDTO dto);
 
 }

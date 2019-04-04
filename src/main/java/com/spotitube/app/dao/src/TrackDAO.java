@@ -19,6 +19,11 @@ public class TrackDAO implements ITrackDAO {
 
     private IDatabaseConnection databaseConnection;
 
+    @Inject
+    public TrackDAO(IDatabaseConnection databaseConnection) {
+        this.databaseConnection = databaseConnection;
+    }
+
     public List<TrackDTO> getAllTracksNotInPlaylist(int playlistId) {
         String query = "SELECT track.id, track.title, track.performer, track.duration, track.album, track.playcount," +
             "    track.publication_date, track.description, track.offline_available\n" +
@@ -53,10 +58,6 @@ public class TrackDAO implements ITrackDAO {
             e.printStackTrace();
         }
         return tracks;
-    }
-
-    @Inject public void setDatabaseConnection(IDatabaseConnection databaseConnection){
-        this.databaseConnection = databaseConnection;
     }
 
 }

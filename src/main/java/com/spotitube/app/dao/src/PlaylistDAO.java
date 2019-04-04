@@ -22,6 +22,10 @@ public class PlaylistDAO implements IPlaylistDAO {
 
     private IDatabaseConnection databaseConnection;
 
+    @Inject
+    public PlaylistDAO(IDatabaseConnection databaseConnection) {
+        this.databaseConnection = databaseConnection;
+    }
     /**
      *  {@inheritDoc}
      */
@@ -85,9 +89,5 @@ public class PlaylistDAO implements IPlaylistDAO {
             e.printStackTrace();
         }
         return false;
-    }
-
-    @Inject void setDatabaseConnection(IDatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
     }
 }

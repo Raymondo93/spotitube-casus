@@ -16,6 +16,7 @@ public class LoginServiceTest {
 
     static final String USERNAME = "admin";
     static final String PASSWORD = "welkom01";
+    static final String TOKEN = "admin23423422";
 
     private LoginService service;
     private IUserDAO userDAO;
@@ -29,16 +30,14 @@ public class LoginServiceTest {
 
     @Test
     public void loginUserTest() throws UserOrPasswordFailException {
-        // Setup
         UserLoginResponseDTO responseDTO = new UserLoginResponseDTO();
         responseDTO.setUser(USERNAME);
-        responseDTO.setToken("BLABLABLA");
-
+        responseDTO.setToken(TOKEN);
         UserLoginDTO dto = new UserLoginDTO(USERNAME, PASSWORD);
         Mockito.when(userDAO.loginUser(dto)).thenReturn(true);
-        // Test
+
         Response loginResponse = service.loginUser(dto);
-        // verify
+
         Assertions.assertEquals(200, loginResponse.getStatus());
     }
 

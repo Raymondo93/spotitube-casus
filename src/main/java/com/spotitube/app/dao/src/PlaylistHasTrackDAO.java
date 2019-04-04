@@ -20,6 +20,11 @@ public class PlaylistHasTrackDAO implements IPlaylistHasTrackDAO {
 
     }
 
+    @Inject
+    public PlaylistHasTrackDAO(IDatabaseConnection databaseConnection) {
+        this.databaseConnection = databaseConnection;
+    }
+
     public boolean removeTrackFromPlaylist(int playlistId, int trackId) {
         String query = "DELETE FROM playlist_has_track WHERE playlist_id = ? AND track_id = ?;";
         return executeQuery(query, playlistId, trackId);
@@ -43,10 +48,6 @@ public class PlaylistHasTrackDAO implements IPlaylistHasTrackDAO {
             e.printStackTrace();
         }
         return false;
-    }
-
-    @Inject public void setDatabaseConnection(IDatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
     }
 
 }

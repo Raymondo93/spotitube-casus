@@ -43,7 +43,7 @@ public class UserDAO implements IUserDAO {
         throw new UserOrPasswordFailException("No user found on " + dto.getUser());
     }
 
-    public void saveUserToken(UserLoginResponseDTO dto) {
+    public boolean saveUserToken(UserLoginResponseDTO dto) {
         String query = "UPDATE user SET token = ? WHERE username = ?";
         try(
             Connection connection = databaseConnection.getConnection();
@@ -52,8 +52,10 @@ public class UserDAO implements IUserDAO {
             statement.setString(1, dto.getToken());
             statement.setString(2, dto.getUser());
             statement.execute();
+            return true;
         } catch (SQLException | NoDatabaseConnectionException e) {
             e.printStackTrace();
         }
+        return false;
     }
 }
