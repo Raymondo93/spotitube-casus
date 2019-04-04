@@ -8,9 +8,7 @@ import javax.ws.rs.core.Response;
 import com.spotitube.app.DTO.UserLoginDTO;
 import com.spotitube.app.DTO.UserLoginResponseDTO;
 import com.spotitube.app.dao.IUserDAO;
-import com.spotitube.app.dao.src.UserDAO;
 import com.spotitube.app.exceptions.UserOrPasswordFailException;
-import org.json.JSONObject;
 import java.util.Date;
 
 

@@ -1,10 +1,8 @@
 package com.spotitube.app.model.src;
 
 import com.spotitube.app.model.IPlaylistModel;
-import com.spotitube.app.model.ITrackModel;
 
 import javax.enterprise.inject.Default;
-import java.util.List;
 
 @Default
 public class PlaylistModel implements IPlaylistModel {

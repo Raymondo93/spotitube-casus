@@ -3,30 +3,43 @@ package com.spotitube.app.model.src;
 import com.spotitube.app.model.ITrackModel;
 
 import javax.enterprise.inject.Default;
-import java.util.Date;
+import java.sql.Date;
 
 @Default
-public abstract class TrackModel implements ITrackModel {
+public class TrackModel implements ITrackModel {
 
     private int id;
-    private String performer;
     private String title;
+    private String performer;
     private int duration;
-    private String url;
+    private String album;
     private int playCount;
+    private Date publicationDate;
+    private String description;
     private boolean offlineAvailable;
 
     public TrackModel() {
 
     }
-    public TrackModel(int id, String performer, String title, int duration, String url,
-                      int playCount, boolean offlineAvailable) {
+
+    public TrackModel(int id, String title, String performer, int duration, String album, int playCount, boolean offlineAvailable) {
         this.id = id;
-        this.performer = performer;
         this.title = title;
+        this.performer = performer;
         this.duration = duration;
-        this.url = url;
+        this.album = album;
         this.playCount = playCount;
+        this.offlineAvailable = offlineAvailable;
+    }
+
+    public TrackModel(int id ,String title, String performer, int duration, int playCount, Date publicationDate, String description, boolean offlineAvailable){
+        this.id = id;
+        this.title = title;
+        this.performer = performer;
+        this.duration = duration;
+        this.playCount = playCount;
+        this.publicationDate = publicationDate;
+        this.description = description;
         this.offlineAvailable = offlineAvailable;
     }
 
@@ -54,14 +67,6 @@ public abstract class TrackModel implements ITrackModel {
         this.title = title;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public int getDuration() {
         return duration;
     }
@@ -86,6 +91,27 @@ public abstract class TrackModel implements ITrackModel {
         this.offlineAvailable = offlineAvailable;
     }
 
-    public abstract String getAlbum();
+    public void setAlbum(String album) {
+        this.album = album;
+    }
 
+    public Date getPublicationDate() {
+        return publicationDate;
+    }
+
+    public void setPublicationDate(Date publicationDate) {
+        this.publicationDate = publicationDate;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getAlbum() {
+        return album;
+    }
 }

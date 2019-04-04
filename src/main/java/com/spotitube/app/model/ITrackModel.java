@@ -1,5 +1,7 @@
 package com.spotitube.app.model;
 
+import java.sql.Date;
+
 public interface ITrackModel {
 
     int getId();
@@ -14,10 +16,6 @@ public interface ITrackModel {
 
     void setTitle(String title);
 
-    String getUrl();
-
-    void setUrl(String url);
-
     int getDuration();
 
     void setDuration(int duration);
@@ -31,4 +29,14 @@ public interface ITrackModel {
     void setOfflineAvailable(boolean offlineAvailable);
 
     String getAlbum();
+
+    void setAlbum(String album);
+
+    Date getPublicationDate();
+
+    void setPublicationDate(Date publicationDate);
+
+    String getDescription();
+
+    void setDescription(String description);
 }

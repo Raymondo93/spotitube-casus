@@ -3,19 +3,17 @@ package com.spotitube.app.service;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.spotitube.app.DTO.PlaylistResponseDTO;
 import com.spotitube.app.DTO.PlaylistDTO;
 import com.spotitube.app.DTO.TrackDTO;
 import com.spotitube.app.dao.IPlaylistDAO;
+import com.spotitube.app.dao.IPlaylistHasTrackDAO;
 import com.spotitube.app.dao.ITrackDAO;
 import com.spotitube.app.dao.IUserHasPlaylistDAO;
 import com.spotitube.app.model.IPlaylistModel;
 import com.spotitube.app.model.src.TrackModel;
-import org.json.JSONObject;
-
 import java.util.List;
 
 @Path("/playlists")
@@ -25,6 +23,8 @@ public class PlaylistService {
     @Inject private IPlaylistDAO playlistDAO;
     @Inject private IUserHasPlaylistDAO userHasPlaylistDAO;
     @Inject private ITrackDAO trackDAO;
+    @Inject private IPlaylistHasTrackDAO playlistHasTrackDAO;
+    @Inject private TrackModel trackModel;
 
     /**
      * Request from frontend to get all playlists
@@ -89,6 +89,67 @@ public class PlaylistService {
         return Response.status(500).build();
     }
 
+    @GET
+    @Consumes("application/json")
+    @Produces("application/json")
+    @Path("/{id}/tracks")
+    public Response getAllTracksFromPlaylist(@PathParam("id") int playlistId) {
+        List<TrackDTO> t = trackDAO.getTracksFromPlaylist(playlistId);
+        TrackDTO[] responseDTO = getTracksFromPlaylist(t);
+        return Response.ok().entity(responseDTO).build();
+    }
+
+    @DELETE
+    @Consumes("application/json")
+    @Produces("application/json")
+    @Path("/{playlistId}/tracks/{trackId}")
+    public Response removeTrackFromPlaylist(
+        @PathParam("playlistId") int playlistId,
+        @PathParam("trackId") int trackId,
+        @QueryParam("token") String token
+    ){
+        if(playlistHasTrackDAO.removeTrackFromPlaylist(playlistId, trackId)){
+            List<TrackDTO> t = trackDAO.getTracksFromPlaylist(playlistId);
+            TrackDTO[] responseDTO = getTracksFromPlaylist(t);
+            return Response.ok().entity(responseDTO).build();
+        }
+        return Response.status(500).build();
+    }
+
+
+    @POST
+    @Consumes("application/json")
+    @Produces("application/json")
+    @Path("/{id}/tracks")
+    public Response addTrackToPlaylist(TrackDTO dto, @PathParam("id") int playlistId) {
+        if(playlistHasTrackDAO.addTrackToPlaylist(dto, playlistId)){
+            List<TrackDTO> t = trackDAO.getTracksFromPlaylist(playlistId);
+            TrackDTO[] responseDTO = getTracksFromPlaylist(t);
+            return Response.ok().entity(responseDTO).build();
+        }
+        return Response.status(500).build();
+    }
+
+    /**
+     * Get tracks of certain playlist and parse to an array
+     * @param t -> list of playlists
+     * @return Array of playlists
+     */
+    private TrackDTO[] getTracksFromPlaylist(List<TrackDTO> t) {
+        TrackDTO[] responseDTO = new TrackDTO[t.size()];
+        for(int i = 0; i < t.size(); ++i) {
+            responseDTO[i] = new TrackDTO(t.get(i).getId(), t.get(i).getTitle(), t.get(i).getPerformer(), t.get(i).getDuration(),
+                t.get(i).getAlbum(), t.get(i).getPlaycount(), t.get(i).getPublicationDate(), t.get(i).getDescription(),
+                t.get(i).isOfflineAvailable());
+        }
+        return responseDTO;
+    }
+
+    /**
+     * Get playlists of a user
+     * @param token -> usertoken
+     * @return -> array of playlists
+     */
     private PlaylistResponseDTO getPlaylists(String token) {
         List<IPlaylistModel> playlistModels = playlistDAO.getPlaylists();
         PlaylistDTO[] playlistDTOS = new PlaylistDTO[playlistModels.size()];
@@ -100,49 +161,4 @@ public class PlaylistService {
         }
         return new PlaylistResponseDTO(playlistDTOS, playtime);
     }
-
-    @GET
-    @Consumes("application/json")
-    @Produces("application/json")
-    @Path("/{id}/tracks")
-    public Response getAllTracksFromPlaylist(@PathParam("id") int playlistId) {
-        List<TrackDTO> t = trackDAO.getTracksFromPlaylist(playlistId);
-        TrackDTO[] responseDTO = new TrackDTO[t.size()];
-        for(int i = 0; i < responseDTO.length; ++i) {
-            responseDTO[i] = new TrackDTO(t.get(i).getId(), t.get(i).getTitle(), t.get(i).getPerformer(), t.get(i).getDuration(),
-                t.get(i).getAlbum(), t.get(i).getPlaycount(), t.get(i).getPublicationDate(), t.get(i).getDescription(),
-                t.get(i).isOfflineAvailable());
-        }
-        return Response.ok().entity(responseDTO).build();
-    }
-
-    @DELETE
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{playlistId}/tracks{trackId}")
-    public void removeTrackFromPlaylist(
-        @QueryParam("playlistId") int playlistId,
-        @QueryParam("trackId") int trackId
-    ){
-        getResponse(null, 404);
-    }
-
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{id}/tracks")
-    public void addTrackToPlaylist(@PathParam("id") int id) {
-        getResponse(null, 404);
-    }
-
-    /**
-     * Send response
-     * @param response -> Resonse object
-     * @param httpStatus -> http code status
-     * @return The response
-     */
-    private Response getResponse(JSONObject response, int httpStatus) {
-        return Response.status(httpStatus).entity(response).type(MediaType.APPLICATION_JSON).build();
-    }
-
 }

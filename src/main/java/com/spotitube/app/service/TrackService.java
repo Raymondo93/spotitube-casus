@@ -2,7 +2,6 @@ package com.spotitube.app.service;
 
 import com.spotitube.app.DTO.TrackDTO;
 import com.spotitube.app.dao.ITrackDAO;
-import com.spotitube.app.model.ITrackModel;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -13,7 +12,6 @@ import java.util.List;
 @Path("/track")
 public class TrackService {
 
-    private ITrackModel trackModel;
     @Inject private ITrackDAO trackDAO;
 
     @GET
