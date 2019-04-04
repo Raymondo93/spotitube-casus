@@ -39,7 +39,7 @@ public class LoginServiceTest {
         // Test
         Response loginResponse = service.loginUser(dto);
         // verify
-        Assertions.assertEquals(201, loginResponse.getStatus());
+        Assertions.assertEquals(200, loginResponse.getStatus());
     }
 
 }

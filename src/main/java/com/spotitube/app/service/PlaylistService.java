@@ -93,7 +93,7 @@ public class PlaylistService {
     @Consumes("application/json")
     @Produces("application/json")
     @Path("/{id}/tracks")
-    public Response getAllTracksFromPlaylist(@PathParam("id") int playlistId) {
+    public Response getAllTracksFromPlaylist(@PathParam("id") int playlistId, @QueryParam("token") String token) {
         List<TrackDTO> t = trackDAO.getTracksFromPlaylist(playlistId);
         TrackDTO[] responseDTO = getTracksFromPlaylist(t);
         return Response.ok().entity(responseDTO).build();
@@ -121,7 +121,7 @@ public class PlaylistService {
     @Consumes("application/json")
     @Produces("application/json")
     @Path("/{id}/tracks")
-    public Response addTrackToPlaylist(TrackDTO dto, @PathParam("id") int playlistId) {
+    public Response addTrackToPlaylist(TrackDTO dto, @PathParam("id") int playlistId, @QueryParam("token") String token) {
         if(playlistHasTrackDAO.addTrackToPlaylist(dto, playlistId)){
             List<TrackDTO> t = trackDAO.getTracksFromPlaylist(playlistId);
             TrackDTO[] responseDTO = getTracksFromPlaylist(t);
