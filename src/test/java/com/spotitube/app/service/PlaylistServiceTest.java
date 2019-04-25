@@ -96,12 +96,31 @@ public class PlaylistServiceTest {
     }
 
     @Test
+    public void removeTrackFromPlaylistFailureTest() {
+        List<TrackDTO> tracks = new ArrayList<>();
+        Mockito.when(playlistHasTrackDAO.removeTrackFromPlaylist(playlistDTO.getId(), trackDTO.getId())).thenReturn(false);
+        Mockito.when(trackDAO.getTracksFromPlaylist(playlistDTO.getId())).thenReturn(tracks);
+        Response removeTrackFromPlaylistResponse = service.removeTrackFromPlaylist(playlistDTO.getId(), trackDTO.getId(), TOKEN);
+        Assertions.assertEquals(500, removeTrackFromPlaylistResponse.getStatus());
+    }
+
+    @Test
     public void addTrackToPlaylistTest() {
         List<TrackDTO> tracks = new ArrayList<>();
         Mockito.when(playlistHasTrackDAO.addTrackToPlaylist(trackDTO, playlistDTO.getId())).thenReturn(true);
         Mockito.when(trackDAO.getTracksFromPlaylist(playlistDTO.getId())).thenReturn(tracks);
         Response addTrackToPlaylistResponse = service.addTrackToPlaylist(trackDTO, playlistDTO.getId(), TOKEN);
         Assertions.assertEquals(200, addTrackToPlaylistResponse.getStatus());
+    }
+
+    @Test
+    public void addTrackToPlaylistFailureTest() {
+        List<TrackDTO> tracks = new ArrayList<>();
+        Mockito.when(playlistHasTrackDAO.addTrackToPlaylist(trackDTO, playlistDTO.getId())).thenReturn(false);
+        Mockito.when(trackDAO.getTracksFromPlaylist(playlistDTO.getId())).thenReturn(tracks);
+        Response addTrackToPlaylistResponse = service.addTrackToPlaylist(trackDTO, playlistDTO.getId(), TOKEN);
+        Assertions.assertEquals(500, addTrackToPlaylistResponse.getStatus());
+
     }
 
 }

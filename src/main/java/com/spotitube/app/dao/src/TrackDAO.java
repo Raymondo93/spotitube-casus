@@ -47,7 +47,7 @@ public class TrackDAO implements ITrackDAO {
         ){
             statement.setInt(1, playlistId);
             ResultSet s = statement.executeQuery();
-            while(s.next()) {
+           while(s.next()) {
                 tracks.add(new TrackDTO(s.getInt("id"), s.getString("title"),
                     s.getString("performer"), s.getInt("duration"), s.getString("album"),
                     s.getInt("playcount"), s.getString("publication_date"),

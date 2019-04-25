@@ -25,9 +25,9 @@ public class TrackService {
         TrackDTO[] responseDTO = new TrackDTO[trackDTOS.size()];
         for (int i = 0; i < trackDTOS.size(); ++i) {
             String date = trackDTOS.get(i).getPublicationDate();
-            responseDTO[i] = new TrackDTO(trackDTOS.get(i).getId(), trackDTOS.get(i).getTitle(), trackDTOS.get(i).getPerformer(), trackDTOS.get(i).getDuration(),
-                trackDTOS.get(i).getAlbum(), trackDTOS.get(i).getPlaycount(), date, trackDTOS.get(i).getDescription(),
-                trackDTOS.get(i).isOfflineAvailable());
+            responseDTO[i] = new TrackDTO(trackDTOS.get(i).getId(), trackDTOS.get(i).getTitle(),
+                trackDTOS.get(i).getPerformer(), trackDTOS.get(i).getDuration(), trackDTOS.get(i).getAlbum(),
+                trackDTOS.get(i).getPlaycount(), date, trackDTOS.get(i).getDescription(), trackDTOS.get(i).isOfflineAvailable());
         }
         return Response.ok().entity(responseDTO).build();
     }

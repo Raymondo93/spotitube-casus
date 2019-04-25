@@ -26,7 +26,7 @@ public class UserDAO implements IUserDAO {
     }
 
     public boolean loginUser(UserLoginDTO dto) throws UserOrPasswordFailException {
-        String query = "SELECT 1 FROM user WHERE username = ? AND password = ?;";
+        String query = "SELECT 1 FROM `user` WHERE username = ? AND password = ?;";
         try(
             Connection connection = databaseConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
