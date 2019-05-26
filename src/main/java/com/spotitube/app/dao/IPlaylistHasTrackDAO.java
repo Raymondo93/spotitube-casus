@@ -1,11 +1,12 @@
 package com.spotitube.app.dao;
 
 import com.spotitube.app.DTO.TrackDTO;
+import com.spotitube.app.exceptions.PlaylistHasTrackException;
 
 public interface IPlaylistHasTrackDAO {
 
-    boolean removeTrackFromPlaylist(int playlistId, int trackId);
+    void removeTrackFromPlaylist(int playlistId, int trackId) throws PlaylistHasTrackException;
 
-    boolean addTrackToPlaylist(TrackDTO dto, int playlistId);
+    void addTrackToPlaylist(TrackDTO dto, int playlistId) throws PlaylistHasTrackException;
 
 }
