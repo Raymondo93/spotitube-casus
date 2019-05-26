@@ -1,6 +1,7 @@
 package com.spotitube.app.dao;
 
 import com.spotitube.app.DTO.PlaylistDTO;
+import com.spotitube.app.exceptions.PlaylistException;
 import com.spotitube.app.model.IPlaylistModel;
 
 import java.util.List;
@@ -18,11 +19,11 @@ public interface IPlaylistDAO {
      * @param dto -> Playlist Data Transfer Object
      * @param token -> usertoken
      */
-    boolean addPlaylistToDatabase(PlaylistDTO dto, String token);
+    void addPlaylistToDatabase(PlaylistDTO dto, String token) throws PlaylistException;
 
     /**
      * Update the name of a playlist
      * @param dto -> The playlist who's name has to be changed
      */
-    boolean updatePlaylistNameInDatabase(PlaylistDTO dto);
+    void updatePlaylistNameInDatabase(PlaylistDTO dto) throws PlaylistException;
 }
