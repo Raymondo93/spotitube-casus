@@ -24,7 +24,6 @@ public class DatabaseConnection implements IDatabaseConnection {
             Properties prop = new Properties();
             prop.load(getClass().getClassLoader().getResourceAsStream("database.properties"));
             Class.forName(prop.getProperty("driver"));
-            System.out.println("jeej");
             connection = DriverManager.getConnection(prop.getProperty("url"), prop.getProperty("username"), prop.getProperty("password"));
             return connection;
         } catch (IOException | ClassNotFoundException | SQLException e) {
