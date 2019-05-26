@@ -43,7 +43,7 @@
       <groupId>org.apache.tomee</groupId>
       <artifactId>apache-tomee</artifactId>
       <version>8.0.0-M2</version>
-      <scope>test</scope>
+      <!--<scope>test</scope>-->
     </dependency>
     <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
     <dependency>
