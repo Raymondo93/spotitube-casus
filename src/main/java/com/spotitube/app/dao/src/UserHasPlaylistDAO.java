@@ -4,6 +4,7 @@ import com.spotitube.app.DTO.PlaylistDTO;
 import com.spotitube.app.dao.IDatabaseConnection;
 import com.spotitube.app.dao.IUserHasPlaylistDAO;
 import com.spotitube.app.exceptions.NoDatabaseConnectionException;
+import com.spotitube.app.exceptions.UserHasPlaylistException;
 
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -21,7 +22,7 @@ public class UserHasPlaylistDAO implements IUserHasPlaylistDAO {
         this.databaseConnection = databaseConnection;
     }
 
-    public boolean addPlaylistToUser(PlaylistDTO dto, String token){
+    public void addPlaylistToUser(PlaylistDTO dto, String token) throws UserHasPlaylistException {
         String query = "INSERT INTO user_has_playlist (username, playlist_id) SELECT username, (SELECT id FROM playlist WHERE name = ?) FROM user WHERE token = ?;";
         try (
             Connection connection = databaseConnection.getConnection();
@@ -30,15 +31,14 @@ public class UserHasPlaylistDAO implements IUserHasPlaylistDAO {
             statement.setString(1, dto.getName());
             statement.setString(2, token);
             statement.execute();
-            return true;
         } catch(SQLException | NoDatabaseConnectionException e) {
             e.printStackTrace();
+            throw new UserHasPlaylistException("Error while saving playlist " + dto.getName() + " to user");
         }
-        return false;
     }
 
 
-    public boolean deletePlaylistFromUser(int playlistId, String token) {
+    public void deletePlaylistFromUser(int playlistId, String token) throws UserHasPlaylistException {
         String query = "DELETE FROM user_has_playlist WHERE username = (SELECT username FROM `user` WHERE token = ?) AND playlist_id = ?;";
         try (
             Connection connection = databaseConnection.getConnection();
@@ -47,11 +47,10 @@ public class UserHasPlaylistDAO implements IUserHasPlaylistDAO {
             statement.setString(1, token);
             statement.setInt(2, playlistId);
             statement.execute();
-            return true;
         } catch (SQLException | NoDatabaseConnectionException e) {
             e.printStackTrace();
+            throw new UserHasPlaylistException("Error while deleting playlist " + playlistId);
         }
-        return false;
     }
 
 }

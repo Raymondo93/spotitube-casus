@@ -8,11 +8,12 @@ import com.spotitube.app.DTO.UserLoginResponseDTO;
 import com.spotitube.app.dao.IDatabaseConnection;
 import com.spotitube.app.dao.IUserDAO;
 import com.spotitube.app.exceptions.NoDatabaseConnectionException;
+import com.spotitube.app.exceptions.NotAuthorizedException;
 import com.spotitube.app.exceptions.UserOrPasswordFailException;
+import com.spotitube.app.exceptions.UserTokenException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Default
@@ -25,7 +26,7 @@ public class UserDAO implements IUserDAO {
         this.databaseConnection = databaseConnection;
     }
 
-    public boolean loginUser(UserLoginDTO dto) throws UserOrPasswordFailException {
+    public void loginUser(UserLoginDTO dto) throws UserOrPasswordFailException {
         String query = "SELECT 1 FROM `user` WHERE username = ? AND password = ?;";
         try(
             Connection connection = databaseConnection.getConnection();
@@ -33,17 +34,14 @@ public class UserDAO implements IUserDAO {
         ){
             statement.setString(1, dto.getUser());
             statement.setString(2, dto.getPassword());
-            ResultSet set = statement.executeQuery();
-            if(set.first() && set.getInt(1) == 1) {
-               return true;
-            }
+            statement.execute();
         } catch (SQLException | NoDatabaseConnectionException e) {
             e.printStackTrace();
+            throw new UserOrPasswordFailException("No user found on " + dto.getUser());
         }
-        throw new UserOrPasswordFailException("No user found on " + dto.getUser());
     }
 
-    public boolean saveUserToken(UserLoginResponseDTO dto) {
+    public void saveUserToken(UserLoginResponseDTO dto) throws UserTokenException {
         String query = "UPDATE user SET token = ? WHERE username = ?";
         try(
             Connection connection = databaseConnection.getConnection();
@@ -52,10 +50,23 @@ public class UserDAO implements IUserDAO {
             statement.setString(1, dto.getToken());
             statement.setString(2, dto.getUser());
             statement.execute();
-            return true;
         } catch (SQLException | NoDatabaseConnectionException e) {
             e.printStackTrace();
+            throw new UserTokenException("Failed to save user token of user" + dto.getUser());
         }
-        return false;
+    }
+
+    public void isAuthorized(String userToken) throws NotAuthorizedException {
+        String query = "SELECT 1 from `user` WHERE token = ?;";
+        try(
+            Connection connection = databaseConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+        ) {
+            statement.setString(1, userToken);
+            statement.execute();
+        } catch (SQLException | NoDatabaseConnectionException e) {
+            e.printStackTrace();
+            throw new NotAuthorizedException("User is not authorized");
+        }
     }
 }

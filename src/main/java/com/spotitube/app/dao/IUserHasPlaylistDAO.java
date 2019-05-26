@@ -1,14 +1,11 @@
 package com.spotitube.app.dao;
 
 import com.spotitube.app.DTO.PlaylistDTO;
-import com.spotitube.app.model.IPlaylistModel;
-
-import java.util.List;
+import com.spotitube.app.exceptions.UserHasPlaylistException;
 
 public interface IUserHasPlaylistDAO {
 
-   boolean addPlaylistToUser(PlaylistDTO dto, String token);
+    void addPlaylistToUser(PlaylistDTO dto, String token) throws UserHasPlaylistException;
 
-
-   boolean deletePlaylistFromUser(int playlistId, String token);
+    void deletePlaylistFromUser(int playlistId, String token) throws UserHasPlaylistException;
 }

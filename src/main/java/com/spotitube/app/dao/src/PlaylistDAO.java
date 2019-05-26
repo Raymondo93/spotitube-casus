@@ -7,6 +7,7 @@ import com.spotitube.app.DTO.PlaylistDTO;
 import com.spotitube.app.dao.IDatabaseConnection;
 import com.spotitube.app.dao.IPlaylistDAO;
 import com.spotitube.app.exceptions.NoDatabaseConnectionException;
+import com.spotitube.app.exceptions.PlaylistException;
 import com.spotitube.app.model.IPlaylistModel;
 import com.spotitube.app.model.src.PlaylistModel;
 
@@ -56,7 +57,7 @@ public class PlaylistDAO implements IPlaylistDAO {
     /**
      *  {@inheritDoc}
      */
-    public boolean addPlaylistToDatabase(PlaylistDTO dto, String token) {
+    public void addPlaylistToDatabase(PlaylistDTO dto, String token) throws PlaylistException {
         String queryPlaylist = "INSERT INTO playlist(name, owner) SELECT ?, username FROM user WHERE token = ?;";
         try (
             Connection connection = databaseConnection.getConnection();
@@ -65,17 +66,16 @@ public class PlaylistDAO implements IPlaylistDAO {
             statement.setString(1, dto.getName());
             statement.setString(2, token);
             statement.execute();
-            return true;
         } catch (SQLException | NoDatabaseConnectionException e) {
             e.printStackTrace();
+            throw new PlaylistException("Error while saving playlist " + dto.getName());
         }
-        return false;
     }
 
     /**
      *  {@inheritDoc}
      */
-    public boolean updatePlaylistNameInDatabase(PlaylistDTO dto) {
+    public void updatePlaylistNameInDatabase(PlaylistDTO dto) throws PlaylistException {
         String query = "UPDATE playlist SET name = ? WHERE id = ?;";
         try (
             Connection connection = databaseConnection.getConnection();
@@ -84,10 +84,9 @@ public class PlaylistDAO implements IPlaylistDAO {
             statement.setString(1, dto.getName());
             statement.setInt(2, dto.getId());
             statement.execute();
-            return true;
         } catch (SQLException | NoDatabaseConnectionException e) {
             e.printStackTrace();
+            throw new PlaylistException("Error while updating playlist " + dto.getName());
         }
-        return false;
     }
 }
