@@ -4,6 +4,7 @@ import com.spotitube.app.DTO.PlaylistDTO;
 import com.spotitube.app.dao.src.DatabaseConnection;
 import com.spotitube.app.dao.src.PlaylistDAO;
 import com.spotitube.app.exceptions.NoDatabaseConnectionException;
+import com.spotitube.app.exceptions.PlaylistException;
 import com.spotitube.app.model.IPlaylistModel;
 import com.spotitube.app.model.src.TrackModel;
 import org.junit.jupiter.api.Assertions;
@@ -47,7 +48,7 @@ public class PlaylistDAOTest {
     }
 
     @Test
-    public void getPlaylistsTest() throws SQLException {
+    public void getPlaylistsTest() throws SQLException, PlaylistException {
         List<IPlaylistModel> playlists = new ArrayList<>();
 
         Mockito.when(statement.executeQuery()).thenReturn(set);
@@ -56,14 +57,39 @@ public class PlaylistDAOTest {
     }
 
     @Test
-    public void addPlaylistToDatabaseTest() throws SQLException {
-        Mockito.when(statement.execute()).thenReturn(true);
-        Assertions.assertTrue(playlistDAO.addPlaylistToDatabase(playlistDTO, TOKEN));
+    public void getPlaylistExceptionTest() throws SQLException {
+        Mockito.when(statement.executeQuery()).thenThrow(new SQLException());
+        PlaylistException exception = Assertions.assertThrows(PlaylistException.class, () ->
+            playlistDAO.getPlaylists());
+        Assertions.assertEquals("Error while fetching playlists", exception.getMessage());
     }
 
     @Test
-    public void updatePlaylistNameInDatabaseTest() throws SQLException {
+    public void addPlaylistToDatabaseTest() throws SQLException, PlaylistException {
         Mockito.when(statement.execute()).thenReturn(true);
-        Assertions.assertTrue(playlistDAO.updatePlaylistNameInDatabase(playlistDTO));
+        playlistDAO.addPlaylistToDatabase(playlistDTO, TOKEN);
+    }
+
+    @Test
+    public void addPlaylistToDatabaseExceptionTest() throws SQLException {
+        Mockito.when(statement.execute()).thenThrow(new SQLException());
+        PlaylistException exception = Assertions.assertThrows(PlaylistException.class, () ->
+            playlistDAO.addPlaylistToDatabase(playlistDTO, TOKEN));
+        Assertions.assertEquals("Error while saving playlist " + playlistDTO.getName(), exception.getMessage());
+
+    }
+
+    @Test
+    public void updatePlaylistNameInDatabaseTest() throws SQLException, PlaylistException {
+        Mockito.when(statement.execute()).thenReturn(true);
+        playlistDAO.updatePlaylistNameInDatabase(playlistDTO);
+    }
+
+    @Test
+    public void updatePlaylistNameInDatabaseTestException() throws SQLException {
+        Mockito.when(statement.execute()).thenThrow(new SQLException());
+        PlaylistException exception = Assertions.assertThrows(PlaylistException.class, () ->
+            playlistDAO.updatePlaylistNameInDatabase(playlistDTO));
+        Assertions.assertEquals("Error while updating playlist " + playlistDTO.getName(), exception.getMessage());
     }
 }
