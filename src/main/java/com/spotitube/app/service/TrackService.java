@@ -36,16 +36,18 @@ public class TrackService {
         @QueryParam("token") String token
     ) {
         try {
-            userDAO.isAuthorized(token);
-            List<TrackDTO> trackDTOS = trackDAO.getAllTracksNotInPlaylist(playlistID);
-            TrackDTO[] responseDTO = new TrackDTO[trackDTOS.size()];
-            for (int i = 0; i < trackDTOS.size(); ++i) {
-                String date = trackDTOS.get(i).getPublicationDate();
-                responseDTO[i] = new TrackDTO(trackDTOS.get(i).getId(), trackDTOS.get(i).getTitle(),
-                    trackDTOS.get(i).getPerformer(), trackDTOS.get(i).getDuration(), trackDTOS.get(i).getAlbum(),
-                    trackDTOS.get(i).getPlaycount(), date, trackDTOS.get(i).getDescription(), trackDTOS.get(i).isOfflineAvailable());
+            if(userDAO.isAuthorized(token)) {
+                List<TrackDTO> trackDTOS = trackDAO.getAllTracksNotInPlaylist(playlistID);
+                TrackDTO[] responseDTO = new TrackDTO[trackDTOS.size()];
+                for (int i = 0; i < trackDTOS.size(); ++i) {
+                    String date = trackDTOS.get(i).getPublicationDate();
+                    responseDTO[i] = new TrackDTO(trackDTOS.get(i).getId(), trackDTOS.get(i).getTitle(),
+                        trackDTOS.get(i).getPerformer(), trackDTOS.get(i).getDuration(), trackDTOS.get(i).getAlbum(),
+                        trackDTOS.get(i).getPlaycount(), date, trackDTOS.get(i).getDescription(), trackDTOS.get(i).isOfflineAvailable());
+                }
+                return Response.ok().entity(responseDTO).build();
             }
-            return Response.ok().entity(responseDTO).build();
+            return Response.status(401).build();
         } catch (NotAuthorizedException e) {
             e.printStackTrace();
             return Response.status(403).build();

@@ -50,9 +50,11 @@ public class PlaylistService {
     @Produces("application/json")
     public Response getAllPlaylists(@QueryParam("token") String token) {
         try {
-            userDAO.isAuthorized(token);
-            PlaylistResponseDTO responseDTO = getPlaylists(token);
-            return Response.ok().entity(responseDTO).build();
+            if(userDAO.isAuthorized(token)){
+                PlaylistResponseDTO responseDTO = getPlaylists(token);
+                return Response.ok().entity(responseDTO).build();
+            }
+            return Response.status(401).build();
         } catch (NotAuthorizedException e) {
             return Response.status(403).build();
         } catch (PlaylistException e) {
@@ -72,11 +74,13 @@ public class PlaylistService {
     @Produces("application/json")
     public Response addPlaylist(PlaylistDTO dto, @QueryParam("token") String token) {
         try{
-            userDAO.isAuthorized(token);
-            playlistDAO.addPlaylistToDatabase(dto, token);
-            userHasPlaylistDAO.addPlaylistToUser(dto, token);
-            PlaylistResponseDTO responseDTO = getPlaylists(token);
-            return Response.ok().entity(responseDTO).build();
+            if (userDAO.isAuthorized(token)) {
+                playlistDAO.addPlaylistToDatabase(dto, token);
+                userHasPlaylistDAO.addPlaylistToUser(dto, token);
+                PlaylistResponseDTO responseDTO = getPlaylists(token);
+                return Response.ok().entity(responseDTO).build();
+            }
+            return Response.status(401).build();
         } catch (NotAuthorizedException e) {
             e.printStackTrace();
             return Response.status(403).build();
@@ -97,10 +101,12 @@ public class PlaylistService {
     @Path("/{id}")
     public Response editPlaylist(PlaylistDTO dto, @PathParam("id") int id, @QueryParam("token") String token){
         try{
-            userDAO.isAuthorized(token);
-            playlistDAO.updatePlaylistNameInDatabase(dto);
-            PlaylistResponseDTO responseDTO = getPlaylists(token);
-            return Response.ok().entity(responseDTO).build();
+            if (userDAO.isAuthorized(token)) {
+                playlistDAO.updatePlaylistNameInDatabase(dto);
+                PlaylistResponseDTO responseDTO = getPlaylists(token);
+                return Response.ok().entity(responseDTO).build();
+            }
+            return Response.status(401).build();
         } catch (NotAuthorizedException e) {
             return Response.status(403).build();
         } catch (PlaylistException e) {
@@ -120,10 +126,12 @@ public class PlaylistService {
     @Path("/{id}")
     public Response removePlaylist(@PathParam("id") int id, @QueryParam("token") String token) {
         try {
-           userDAO.isAuthorized(token);
-           userHasPlaylistDAO.deletePlaylistFromUser(id, token);
-           PlaylistResponseDTO responseDTO = getPlaylists(token);
-           return Response.ok().entity(responseDTO).build();
+           if(userDAO.isAuthorized(token)) {
+               userHasPlaylistDAO.deletePlaylistFromUser(id, token);
+               PlaylistResponseDTO responseDTO = getPlaylists(token);
+               return Response.ok().entity(responseDTO).build();
+           }
+           return Response.status(401).build();
         } catch (NotAuthorizedException e) {
             return Response.status(403).build();
         } catch (UserHasPlaylistException | PlaylistException e) {
@@ -139,10 +147,12 @@ public class PlaylistService {
     @Path("/{id}/tracks")
     public Response getAllTracksFromPlaylist(@PathParam("id") int playlistId, @QueryParam("token") String token) {
         try {
-            userDAO.isAuthorized(token);
-            List<TrackDTO> t = trackDAO.getTracksFromPlaylist(playlistId);
-            TrackDTO[] responseDTO = getTracksFromPlaylist(t);
-            return Response.ok().entity(responseDTO).build();
+            if (userDAO.isAuthorized(token)) {
+                List<TrackDTO> t = trackDAO.getTracksFromPlaylist(playlistId);
+                TrackDTO[] responseDTO = getTracksFromPlaylist(t);
+                return Response.ok().entity(responseDTO).build();
+            }
+            return Response.status(401).build();
         } catch (NotAuthorizedException e) {
             return Response.status(403).build();
         } catch (TracksException e) {
@@ -161,11 +171,13 @@ public class PlaylistService {
         @QueryParam("token") String token
     ){
         try {
-            userDAO.isAuthorized(token);
-            playlistHasTrackDAO.removeTrackFromPlaylist(playlistId, trackId);
-            List<TrackDTO> t = trackDAO.getTracksFromPlaylist(playlistId);
-            TrackDTO[] responseDTO = getTracksFromPlaylist(t);
-            return Response.ok().entity(responseDTO).build();
+            if(userDAO.isAuthorized(token)) {
+                playlistHasTrackDAO.removeTrackFromPlaylist(playlistId, trackId);
+                List<TrackDTO> t = trackDAO.getTracksFromPlaylist(playlistId);
+                TrackDTO[] responseDTO = getTracksFromPlaylist(t);
+                return Response.ok().entity(responseDTO).build();
+            }
+            return Response.status(401).build();
         } catch (NotAuthorizedException e) {
             return Response.status(403).build();
         } catch (PlaylistHasTrackException | TracksException e) {
@@ -181,11 +193,13 @@ public class PlaylistService {
     @Path("/{id}/tracks")
     public Response addTrackToPlaylist(TrackDTO dto, @PathParam("id") int playlistId, @QueryParam("token") String token) {
         try {
-            userDAO.isAuthorized(token);
-            playlistHasTrackDAO.addTrackToPlaylist(dto, playlistId);
-            List<TrackDTO> t = trackDAO.getTracksFromPlaylist(playlistId);
-            TrackDTO[] responseDTO = getTracksFromPlaylist(t);
-            return Response.ok().entity(responseDTO).build();
+            if(userDAO.isAuthorized(token)) {
+                playlistHasTrackDAO.addTrackToPlaylist(dto, playlistId);
+                List<TrackDTO> t = trackDAO.getTracksFromPlaylist(playlistId);
+                TrackDTO[] responseDTO = getTracksFromPlaylist(t);
+                return Response.ok().entity(responseDTO).build();
+            }
+            return Response.status(401).build();
         } catch (NotAuthorizedException e) {
             return Response.status(403).build();
         } catch (PlaylistHasTrackException | TracksException e) {
