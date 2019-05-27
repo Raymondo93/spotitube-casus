@@ -54,6 +54,9 @@ public class PlaylistService {
             return Response.ok().entity(responseDTO).build();
         } catch (NotAuthorizedException e) {
             return Response.status(403).build();
+        } catch (PlaylistException e) {
+            e.printStackTrace();
+            return Response.status(500).build();
         }
     }
 
@@ -122,9 +125,10 @@ public class PlaylistService {
            return Response.ok().entity(responseDTO).build();
         } catch (NotAuthorizedException e) {
             return Response.status(403).build();
-        } catch (UserHasPlaylistException e) {
+        } catch (UserHasPlaylistException | PlaylistException e) {
             e.printStackTrace();
             return Response.status(500).build();
+
         }
     }
 
@@ -206,7 +210,7 @@ public class PlaylistService {
      * @param token -> usertoken
      * @return -> array of playlists
      */
-    private PlaylistResponseDTO getPlaylists(String token) {
+    private PlaylistResponseDTO getPlaylists(String token) throws PlaylistException {
         List<IPlaylistModel> playlistModels = playlistDAO.getPlaylists();
         PlaylistDTO[] playlistDTOS = new PlaylistDTO[playlistModels.size()];
         int playtime = 0;
