@@ -89,4 +89,18 @@ public class PlaylistDAO implements IPlaylistDAO {
             throw new PlaylistException("Error while updating playlist " + dto.getName());
         }
     }
+
+    public void deletePlaylistFromDatabase(int playlistId) throws PlaylistException {
+        String query = "DELETE FROM playlist WHERE id = ?;";
+        try (
+            Connection connection = databaseConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+        ) {
+            statement.setInt(1, playlistId);
+            statement.execute();
+        } catch (SQLException | NoDatabaseConnectionException e) {
+            e.printStackTrace();
+            throw new PlaylistException("Error while deleting playlist " + playlistId);
+        }
+    }
 }

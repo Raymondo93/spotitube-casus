@@ -26,4 +26,7 @@ public interface IPlaylistDAO {
      * @param dto -> The playlist who's name has to be changed
      */
     void updatePlaylistNameInDatabase(PlaylistDTO dto) throws PlaylistException;
+
+
+    void deletePlaylistFromDatabase(int playlistId) throws PlaylistException;
 }

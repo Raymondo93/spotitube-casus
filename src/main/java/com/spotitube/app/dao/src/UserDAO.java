@@ -28,7 +28,7 @@ public class UserDAO implements IUserDAO {
     }
 
     public void loginUser(UserLoginDTO dto) throws UserOrPasswordFailException {
-        String query = "SELECT 1 FROM `user` WHERE username = ? AND password = ?;";
+        String query = "SELECT 1 as 'selected' FROM `user` WHERE username = ? AND password = ?;";
         try(
             Connection connection = databaseConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
@@ -36,8 +36,10 @@ public class UserDAO implements IUserDAO {
             statement.setString(1, dto.getUser());
             statement.setString(2, dto.getPassword());
             ResultSet set = statement.executeQuery();
-            if(set.getInt(1) != 1) {
-                throw new UserOrPasswordFailException("No user found on " + dto.getUser());
+            while(set.next()) {
+                if(set.getInt("selected") != 1) {
+                    throw new UserOrPasswordFailException("No user found on " + dto.getUser());
+                }
             }
         } catch (SQLException | NoDatabaseConnectionException e) {
             e.printStackTrace();
@@ -61,20 +63,39 @@ public class UserDAO implements IUserDAO {
     }
 
     public boolean isAuthorized(String userToken) throws NotAuthorizedException {
-        String query = "SELECT 1 from `user` WHERE token = ?;";
+        String query = "SELECT 1 as 'authorized' from `user` WHERE token = ?;";
         try(
             Connection connection = databaseConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
         ) {
             statement.setString(1, userToken);
             ResultSet set = statement.executeQuery();
-            if(set.first() && set.getInt(1) == 1) {
-                return true;
+            while (set.next()) {
+                if (set.getInt("authorized") == 1) {
+                    return true;
+                }
             }
             throw new NotAuthorizedException("User is not authorized");
         } catch (SQLException | NoDatabaseConnectionException e) {
             e.printStackTrace();
             throw new NotAuthorizedException("User is not authorized");
         }
+    }
+
+    public String getUsernameByToken(String userToken) throws UserTokenException {
+        String query = "SELECT username FROM user WHERE token = ?;";
+        try (
+            Connection connection = databaseConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+        ){
+            statement.setString(1, userToken);
+            ResultSet set = statement.executeQuery();
+            while(set.next()) {
+                return set.getString("username");
+            }
+        } catch (SQLException | NoDatabaseConnectionException e) {
+            e.printStackTrace();
+        }
+        throw new UserTokenException("No user found is token " + userToken);
     }
 }

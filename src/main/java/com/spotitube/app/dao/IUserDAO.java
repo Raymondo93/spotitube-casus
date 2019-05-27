@@ -30,4 +30,6 @@ public interface IUserDAO {
      */
     boolean isAuthorized(String userToken) throws NotAuthorizedException;
 
+    String getUsernameByToken(String userToken) throws UserTokenException;
+
 }

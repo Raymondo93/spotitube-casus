@@ -26,6 +26,7 @@ import com.spotitube.app.exceptions.PlaylistException;
 import com.spotitube.app.exceptions.PlaylistHasTrackException;
 import com.spotitube.app.exceptions.TracksException;
 import com.spotitube.app.exceptions.UserHasPlaylistException;
+import com.spotitube.app.exceptions.UserTokenException;
 import com.spotitube.app.model.IPlaylistModel;
 import com.spotitube.app.model.src.TrackModel;
 import java.util.List;
@@ -58,7 +59,7 @@ public class PlaylistService {
                 return Response.ok().entity(responseDTO).build();
             }
             return Response.status(401).build();
-        } catch (NotAuthorizedException e) {
+        } catch (NotAuthorizedException | UserTokenException e) {
             return Response.status(403).build();
         } catch (PlaylistException e) {
             e.printStackTrace();
@@ -84,7 +85,7 @@ public class PlaylistService {
                 return Response.ok().entity(responseDTO).build();
             }
             return Response.status(401).build();
-        } catch (NotAuthorizedException e) {
+        } catch (NotAuthorizedException | UserTokenException e) {
             e.printStackTrace();
             return Response.status(403).build();
         } catch (PlaylistException | UserHasPlaylistException e) {
@@ -110,7 +111,7 @@ public class PlaylistService {
                 return Response.ok().entity(responseDTO).build();
             }
             return Response.status(401).build();
-        } catch (NotAuthorizedException e) {
+        } catch (NotAuthorizedException | UserTokenException e) {
             return Response.status(403).build();
         } catch (PlaylistException e) {
             e.printStackTrace();
@@ -131,16 +132,16 @@ public class PlaylistService {
         try {
            if(userDAO.isAuthorized(token)) {
                userHasPlaylistDAO.deletePlaylistFromUser(id, token);
+               playlistDAO.deletePlaylistFromDatabase(id);
                PlaylistResponseDTO responseDTO = getPlaylists(token);
                return Response.ok().entity(responseDTO).build();
            }
            return Response.status(401).build();
-        } catch (NotAuthorizedException e) {
+        } catch (NotAuthorizedException | UserTokenException e) {
             return Response.status(403).build();
         } catch (UserHasPlaylistException | PlaylistException e) {
             e.printStackTrace();
             return Response.status(500).build();
-
         }
     }
 
@@ -231,12 +232,12 @@ public class PlaylistService {
      * @param token -> usertoken
      * @return -> array of playlists
      */
-    private PlaylistResponseDTO getPlaylists(String token) throws PlaylistException {
+    private PlaylistResponseDTO getPlaylists(String token) throws PlaylistException, UserTokenException {
         List<IPlaylistModel> playlistModels = playlistDAO.getPlaylists();
         PlaylistDTO[] playlistDTOS = new PlaylistDTO[playlistModels.size()];
         int playtime = 0;
         for(int i = 0; i < playlistDTOS.length; ++i){
-            String owner = playlistModels.get(i).getOwnerName().equals(token) ? "true" : "false";
+            String owner = playlistModels.get(i).getOwnerName().equals(userDAO.getUsernameByToken(token)) ? "true" : "false";
             playlistDTOS[i] = new PlaylistDTO(playlistModels.get(i).getId(), playlistModels.get(i).getName() , owner, new TrackModel[0]);
             playtime += playlistModels.get(i).getPlaylistLength();
         }
