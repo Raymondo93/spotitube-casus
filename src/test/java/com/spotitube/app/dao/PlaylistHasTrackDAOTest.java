@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.sql.Connection;
@@ -71,8 +70,9 @@ public class PlaylistHasTrackDAOTest {
     @Test
     public void addTrackFromPlaylistExceptionTest() throws SQLException {
         Mockito.when(statement.execute()).thenThrow(new SQLException());
+        TrackDTO trackDTO = Mockito.mock(TrackDTO.class);
         PlaylistHasTrackException exception = Assertions.assertThrows(PlaylistHasTrackException.class, () ->
-            playlistHasTrackDAO.removeTrackFromPlaylist(PLAYLISTID, TRACKID));
+            playlistHasTrackDAO.addTrackToPlaylist(trackDTO, TRACKID));
         Assertions.assertEquals("Error while adding track of playlist", exception.getMessage());
     }
 }

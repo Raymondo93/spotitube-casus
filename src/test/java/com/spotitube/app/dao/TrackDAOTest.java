@@ -4,6 +4,7 @@ import com.spotitube.app.DTO.TrackDTO;
 import com.spotitube.app.dao.src.DatabaseConnection;
 import com.spotitube.app.dao.src.TrackDAO;
 import com.spotitube.app.exceptions.NoDatabaseConnectionException;
+import com.spotitube.app.exceptions.TracksException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,14 +45,14 @@ public class TrackDAOTest {
     }
 
     @Test
-    public void getAllTracksNotInPlaylistTest() throws SQLException {
+    public void getAllTracksNotInPlaylistTest() throws SQLException, TracksException {
         List<TrackDTO> tracks = new ArrayList<>();
         Mockito.when(statement.executeQuery()).thenReturn(set);
         Assertions.assertEquals(trackDAO.getAllTracksNotInPlaylist(PLAYLISTID),tracks);
     }
 
     @Test
-    public void getTracksFromPlaylistTest() throws SQLException {
+    public void getTracksFromPlaylistTest() throws SQLException, TracksException {
         List<TrackDTO> tracks = new ArrayList<>();
         Mockito.when(statement.executeQuery()).thenReturn(set);
         Assertions.assertEquals(trackDAO.getTracksFromPlaylist(PLAYLISTID), tracks);
