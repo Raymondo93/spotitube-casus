@@ -5,6 +5,7 @@ import com.spotitube.app.DTO.UserLoginResponseDTO;
 import com.spotitube.app.dao.IUserDAO;
 import com.spotitube.app.dao.src.UserDAO;
 import com.spotitube.app.exceptions.UserOrPasswordFailException;
+import com.spotitube.app.exceptions.UserTokenException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,8 +41,10 @@ public class LoginServiceTest {
     }
 
     @Test
-    public void loginUserTest() throws UserOrPasswordFailException {
-        Mockito.when(userDAO.loginUser(dto)).thenReturn(true);
+    public void loginUserTest() throws UserOrPasswordFailException, UserTokenException {
+        Mockito.doNothing().when(userDAO).loginUser(dto);
+
+        Mockito.doNothing().when(userDAO).saveUserToken(responseDTO);
 
         Response loginResponse = service.loginUser(dto);
 
@@ -49,11 +52,10 @@ public class LoginServiceTest {
     }
 
     @Test
-    public void loginUserFailTest() throws UserOrPasswordFailException {
-        Mockito.when(userDAO.loginUser(dto)).thenReturn(false);
+    public void loginUserPasswordExceptionTest() throws UserOrPasswordFailException {
+        Mockito.doThrow(new UserOrPasswordFailException("Wrong password mate")).when(userDAO).loginUser(dto);
         Response loginResponse = service.loginUser(dto);
         Assertions.assertEquals(401, loginResponse.getStatus());
     }
-
 
 }
