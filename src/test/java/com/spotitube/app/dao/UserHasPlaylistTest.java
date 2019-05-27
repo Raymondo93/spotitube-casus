@@ -4,6 +4,7 @@ import com.spotitube.app.DTO.PlaylistDTO;
 import com.spotitube.app.dao.src.DatabaseConnection;
 import com.spotitube.app.dao.src.UserHasPlaylistDAO;
 import com.spotitube.app.exceptions.NoDatabaseConnectionException;
+import com.spotitube.app.exceptions.UserHasPlaylistException;
 import com.spotitube.app.model.src.TrackModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -41,16 +42,33 @@ public class UserHasPlaylistTest {
 
         Mockito.when(databaseConnection.getConnection()).thenReturn(connection);
         Mockito.when(connection.prepareStatement(Mockito.anyString())).thenReturn(statement);
+    }
+
+    @Test
+    public void addPlaylistToUserTest() throws SQLException, UserHasPlaylistException {
         Mockito.when(statement.execute()).thenReturn(true);
+        userHasPlaylistDAO.addPlaylistToUser(playlistDTO, TOKEN);
     }
 
     @Test
-    public void addPlaylistToUserTest() throws SQLException {
-        Assertions.assertTrue(userHasPlaylistDAO.addPlaylistToUser(playlistDTO, TOKEN));
+    public void addPlaylistToUserExceptionTest() throws SQLException {
+        Mockito.when(statement.execute()).thenThrow(new SQLException());
+        UserHasPlaylistException exception = Assertions.assertThrows(UserHasPlaylistException.class, () ->
+            userHasPlaylistDAO.addPlaylistToUser(playlistDTO, TOKEN));
+        Assertions.assertEquals("Error while saving playlist " + playlistDTO.getName() + " to user", exception.getMessage());
     }
 
     @Test
-    public void deletePlaylistFromUser() throws SQLException {
-        Assertions.assertTrue(userHasPlaylistDAO.deletePlaylistFromUser(PLAYLISTID, TOKEN));
+    public void deletePlaylistFromUser() throws SQLException, UserHasPlaylistException {
+        Mockito.when(statement.execute()).thenReturn(true);
+        userHasPlaylistDAO.deletePlaylistFromUser(PLAYLISTID, TOKEN);
+    }
+
+    @Test
+    public void deletePlaylistFromUserExceptionTest() throws SQLException {
+        Mockito.when(statement.execute()).thenThrow(new SQLException());
+        UserHasPlaylistException exception = Assertions.assertThrows(UserHasPlaylistException.class, () ->
+            userHasPlaylistDAO.deletePlaylistFromUser(playlistDTO.getId(), TOKEN));
+        Assertions.assertEquals("Error while deleting playlist " + playlistDTO.getId(), exception.getMessage());
     }
 }
