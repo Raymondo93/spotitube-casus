@@ -30,7 +30,7 @@ public class PlaylistDAO implements IPlaylistDAO {
     /**
      *  {@inheritDoc}
      */
-    public List<IPlaylistModel> getPlaylists() {
+    public List<IPlaylistModel> getPlaylists() throws PlaylistException {
         String query = "select  playlist.id, playlist.name, playlist.owner, sum(track.duration) as playtime\n" +
             "from playlist  \n" +
             "\tleft join playlist_has_track on playlist.id = playlist_has_track.playlist_id\n" +
@@ -49,8 +49,8 @@ public class PlaylistDAO implements IPlaylistDAO {
             return playlists;
         } catch (SQLException | NoDatabaseConnectionException e) {
             e.printStackTrace();
+            throw new PlaylistException("Error while fetching playlists");
         }
-        return playlists;
     }
 
 

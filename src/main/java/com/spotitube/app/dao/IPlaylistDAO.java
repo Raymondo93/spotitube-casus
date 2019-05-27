@@ -12,7 +12,7 @@ public interface IPlaylistDAO {
      * Get all playlists from database, with length of all tracks.
      * @return Arraylist of playlists
      */
-    List<IPlaylistModel> getPlaylists();
+    List<IPlaylistModel> getPlaylists() throws PlaylistException;
 
     /**
      * Add a new playlist for a user in the database
