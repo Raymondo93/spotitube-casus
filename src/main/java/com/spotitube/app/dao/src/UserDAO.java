@@ -14,6 +14,7 @@ import com.spotitube.app.exceptions.UserTokenException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Default
@@ -34,7 +35,10 @@ public class UserDAO implements IUserDAO {
         ){
             statement.setString(1, dto.getUser());
             statement.setString(2, dto.getPassword());
-            statement.execute();
+            ResultSet set = statement.executeQuery();
+            if(set.getInt(1) != 1) {
+                throw new UserOrPasswordFailException("No user found on " + dto.getUser());
+            }
         } catch (SQLException | NoDatabaseConnectionException e) {
             e.printStackTrace();
             throw new UserOrPasswordFailException("No user found on " + dto.getUser());
@@ -52,18 +56,22 @@ public class UserDAO implements IUserDAO {
             statement.execute();
         } catch (SQLException | NoDatabaseConnectionException e) {
             e.printStackTrace();
-            throw new UserTokenException("Failed to save user token of user" + dto.getUser());
+            throw new UserTokenException("Failed to save user token of user " + dto.getUser());
         }
     }
 
-    public void isAuthorized(String userToken) throws NotAuthorizedException {
+    public boolean isAuthorized(String userToken) throws NotAuthorizedException {
         String query = "SELECT 1 from `user` WHERE token = ?;";
         try(
             Connection connection = databaseConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
         ) {
             statement.setString(1, userToken);
-            statement.execute();
+            ResultSet set = statement.executeQuery();
+            if(set.first() && set.getInt(1) == 1) {
+                return true;
+            }
+            throw new NotAuthorizedException("User is not authorized");
         } catch (SQLException | NoDatabaseConnectionException e) {
             e.printStackTrace();
             throw new NotAuthorizedException("User is not authorized");

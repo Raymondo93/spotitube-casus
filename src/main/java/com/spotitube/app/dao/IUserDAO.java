@@ -28,6 +28,6 @@ public interface IUserDAO {
      * @param userToken => user token
      * @throws NotAuthorizedException => When user is not authorized
      */
-    void isAuthorized(String userToken) throws NotAuthorizedException;
+    boolean isAuthorized(String userToken) throws NotAuthorizedException;
 
 }
