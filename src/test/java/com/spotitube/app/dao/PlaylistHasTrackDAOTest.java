@@ -5,11 +5,13 @@ import com.spotitube.app.DTO.TrackDTO;
 import com.spotitube.app.dao.src.DatabaseConnection;
 import com.spotitube.app.dao.src.PlaylistHasTrackDAO;
 import com.spotitube.app.exceptions.NoDatabaseConnectionException;
+import com.spotitube.app.exceptions.PlaylistHasTrackException;
 import com.spotitube.app.model.src.TrackModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.sql.Connection;
@@ -46,16 +48,32 @@ public class PlaylistHasTrackDAOTest {
     }
 
     @Test
-    public void removeTrackFromPlaylist() throws SQLException {
+    public void removeTrackFromPlaylistTest() throws SQLException, PlaylistHasTrackException {
         Mockito.when(statement.execute()).thenReturn(true);
-        Assertions.assertTrue(playlistHasTrackDAO.removeTrackFromPlaylist(PLAYLISTID, TRACKID));
+        playlistHasTrackDAO.removeTrackFromPlaylist(PLAYLISTID, TRACKID);
     }
 
     @Test
-    public void addTrackToPlaylistTest() throws SQLException {
-        TrackDTO trackDTO = new TrackDTO(1, "testTrack", "Test performer", 200, "testAlbum", 0, null, null, false);
+    public void removeTrackFromPlaylistExceptionTest() throws SQLException {
+        Mockito.when(statement.execute()).thenThrow(new SQLException());
+        PlaylistHasTrackException exception = Assertions.assertThrows(PlaylistHasTrackException.class, () ->
+            playlistHasTrackDAO.removeTrackFromPlaylist(PLAYLISTID, TRACKID));
+        Assertions.assertEquals("Error while deleting track of playlist", exception.getMessage());
+    }
+
+    @Test
+    public void addTrackToPlaylistTest() throws SQLException, PlaylistHasTrackException {
+        TrackDTO trackDTO = Mockito.mock(TrackDTO.class);
         Mockito.when(statement.execute()).thenReturn(true);
-        Assertions.assertTrue(playlistHasTrackDAO.addTrackToPlaylist(trackDTO, PLAYLISTID));
+        playlistHasTrackDAO.addTrackToPlaylist(trackDTO, PLAYLISTID);
+    }
+
+    @Test
+    public void addTrackFromPlaylistExceptionTest() throws SQLException {
+        Mockito.when(statement.execute()).thenThrow(new SQLException());
+        PlaylistHasTrackException exception = Assertions.assertThrows(PlaylistHasTrackException.class, () ->
+            playlistHasTrackDAO.removeTrackFromPlaylist(PLAYLISTID, TRACKID));
+        Assertions.assertEquals("Error while adding track of playlist", exception.getMessage());
     }
 }
 
