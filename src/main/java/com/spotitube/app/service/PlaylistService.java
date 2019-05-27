@@ -40,6 +40,9 @@ public class PlaylistService {
     private IPlaylistHasTrackDAO playlistHasTrackDAO;
     private IUserDAO userDAO;
 
+    public PlaylistService() {
+
+    }
 
     /**
      * Request from frontend to get all playlists
