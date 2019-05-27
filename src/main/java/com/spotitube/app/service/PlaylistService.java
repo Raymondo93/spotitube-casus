@@ -24,6 +24,7 @@ import com.spotitube.app.dao.IUserHasPlaylistDAO;
 import com.spotitube.app.exceptions.NotAuthorizedException;
 import com.spotitube.app.exceptions.PlaylistException;
 import com.spotitube.app.exceptions.PlaylistHasTrackException;
+import com.spotitube.app.exceptions.TracksException;
 import com.spotitube.app.exceptions.UserHasPlaylistException;
 import com.spotitube.app.model.IPlaylistModel;
 import com.spotitube.app.model.src.TrackModel;
@@ -144,6 +145,9 @@ public class PlaylistService {
             return Response.ok().entity(responseDTO).build();
         } catch (NotAuthorizedException e) {
             return Response.status(403).build();
+        } catch (TracksException e) {
+            e.printStackTrace();
+            return Response.status(500).build();
         }
     }
 
@@ -164,7 +168,7 @@ public class PlaylistService {
             return Response.ok().entity(responseDTO).build();
         } catch (NotAuthorizedException e) {
             return Response.status(403).build();
-        } catch (PlaylistHasTrackException e) {
+        } catch (PlaylistHasTrackException | TracksException e) {
             e.printStackTrace();
             return Response.status(500).build();
         }
@@ -184,7 +188,7 @@ public class PlaylistService {
             return Response.ok().entity(responseDTO).build();
         } catch (NotAuthorizedException e) {
             return Response.status(403).build();
-        } catch (PlaylistHasTrackException e) {
+        } catch (PlaylistHasTrackException | TracksException e) {
             e.printStackTrace();
             return Response.status(500).build();
         }

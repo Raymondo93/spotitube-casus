@@ -4,6 +4,7 @@ import com.spotitube.app.DTO.TrackDTO;
 import com.spotitube.app.dao.ITrackDAO;
 import com.spotitube.app.dao.IUserDAO;
 import com.spotitube.app.exceptions.NotAuthorizedException;
+import com.spotitube.app.exceptions.TracksException;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -48,6 +49,9 @@ public class TrackService {
         } catch (NotAuthorizedException e) {
             e.printStackTrace();
             return Response.status(403).build();
+        } catch (TracksException e) {
+            e.printStackTrace();
+            return Response.status(500).build();
         }
     }
 
