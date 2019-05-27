@@ -17,10 +17,6 @@ public class PlaylistHasTrackDAO implements IPlaylistHasTrackDAO {
 
     private IDatabaseConnection databaseConnection;
 
-    public PlaylistHasTrackDAO() {
-
-    }
-
     @Inject
     public PlaylistHasTrackDAO(IDatabaseConnection databaseConnection) {
         this.databaseConnection = databaseConnection;
