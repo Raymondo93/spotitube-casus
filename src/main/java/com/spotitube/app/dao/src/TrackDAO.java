@@ -4,6 +4,7 @@ import com.spotitube.app.DTO.TrackDTO;
 import com.spotitube.app.dao.IDatabaseConnection;
 import com.spotitube.app.dao.ITrackDAO;
 import com.spotitube.app.exceptions.NoDatabaseConnectionException;
+import com.spotitube.app.exceptions.TracksException;
 
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -24,7 +25,7 @@ public class TrackDAO implements ITrackDAO {
         this.databaseConnection = databaseConnection;
     }
 
-    public List<TrackDTO> getAllTracksNotInPlaylist(int playlistId) {
+    public List<TrackDTO> getAllTracksNotInPlaylist(int playlistId) throws TracksException {
         String query = "SELECT track.id, track.title, track.performer, track.duration, track.album, track.playcount," +
             "    track.publication_date, track.description, track.offline_available\n" +
             "FROM track left join playlist_has_track ON track.id = playlist_has_track.track_id\n" +
@@ -32,14 +33,14 @@ public class TrackDAO implements ITrackDAO {
         return getTracks(query, playlistId);
     }
 
-    public List<TrackDTO> getTracksFromPlaylist(int playlistId) {
+    public List<TrackDTO> getTracksFromPlaylist(int playlistId) throws TracksException {
         String query = "SELECT track.id, track.title, track.performer, track.duration, track.album, track.playcount, track.publication_date, track.description, track.offline_available \n" +
             "FROM track left join playlist_has_track ON track.id = playlist_has_track.track_id\n" +
             "WHERE playlist_has_track.playlist_id = ?\n";
         return getTracks(query, playlistId);
     }
 
-    private List<TrackDTO> getTracks(String query, int playlistId) {
+    private List<TrackDTO> getTracks(String query, int playlistId) throws TracksException {
         List<TrackDTO> tracks = new ArrayList<>();
         try(
             Connection connection = databaseConnection.getConnection();
@@ -56,8 +57,8 @@ public class TrackDAO implements ITrackDAO {
             return tracks;
         } catch (SQLException | NoDatabaseConnectionException e) {
             e.printStackTrace();
+            throw new TracksException("Error while fetching tracks");
         }
-        return tracks;
     }
 
 }
