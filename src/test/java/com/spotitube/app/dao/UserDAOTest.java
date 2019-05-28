@@ -61,7 +61,8 @@ public class UserDAOTest {
         dto.setUser(USERNAME);
 
         Mockito.when(statement.executeQuery()).thenReturn(set);
-        Mockito.when(set.getInt(1)).thenReturn(0);
+        Mockito.when(set.next()).thenReturn(true);
+        Mockito.when(set.getInt("selected")).thenReturn(0);
 
         UserOrPasswordFailException exception = Assertions.assertThrows(UserOrPasswordFailException.class, () ->
             userDAO.loginUser(dto));
@@ -109,17 +110,16 @@ public class UserDAOTest {
     @Test
     public void isAuthorizedTest() throws NotAuthorizedException, SQLException {
         Mockito.when(statement.executeQuery()).thenReturn(set);
-        Mockito.when(set.first()).thenReturn(true);
-        Mockito.when(set.getInt(1)).thenReturn(1);
+        Mockito.when(set.next()).thenReturn(true);
+        Mockito.when(set.getInt("authorized")).thenReturn(1);
 
         Assertions.assertTrue(userDAO.isAuthorized(TOKEN));
     }
 
     @Test
-    public void isAuthorizedExceptionTest() throws NotAuthorizedException, SQLException {
+    public void isAuthorizedExceptionTest() throws SQLException {
         Mockito.when(statement.executeQuery()).thenReturn(set);
-        Mockito.when(set.first()).thenReturn(true);
-        Mockito.when(set.getInt(1)).thenReturn(0);
+        Mockito.when(set.next()).thenReturn(false);
 
         NotAuthorizedException exception = Assertions.assertThrows(NotAuthorizedException.class, () ->
             userDAO.isAuthorized(TOKEN));
