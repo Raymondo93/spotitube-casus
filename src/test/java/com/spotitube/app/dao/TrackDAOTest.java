@@ -58,4 +58,12 @@ public class TrackDAOTest {
         Assertions.assertEquals(trackDAO.getTracksFromPlaylist(PLAYLISTID), tracks);
     }
 
+    @Test
+    public void getTracksFromPlaylistExceptionTest() throws SQLException {
+        Mockito.when(statement.executeQuery()).thenThrow(new SQLException());
+        TracksException exception = Assertions.assertThrows(TracksException.class, () ->
+            trackDAO.getTracksFromPlaylist(PLAYLISTID));
+        Assertions.assertEquals("Error while fetching tracks", exception.getMessage());
+    }
+
 }

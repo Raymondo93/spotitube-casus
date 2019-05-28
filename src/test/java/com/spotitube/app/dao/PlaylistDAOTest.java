@@ -91,4 +91,18 @@ public class PlaylistDAOTest {
             playlistDAO.updatePlaylistNameInDatabase(playlistDTO));
         Assertions.assertEquals("Error while updating playlist " + playlistDTO.getName(), exception.getMessage());
     }
+
+    @Test
+    public void deletePlaylistFromDatabaseTest() throws SQLException, PlaylistException {
+        Mockito.when(statement.execute()).thenReturn(true);
+        playlistDAO.deletePlaylistFromDatabase(playlistDTO.getId());
+    }
+
+    @Test
+    public void deletePlaylistFromDatabaseExceptiontest() throws  SQLException {
+        Mockito.when(statement.execute()).thenThrow(new SQLException());
+        PlaylistException exception = Assertions.assertThrows(PlaylistException.class, () ->
+            playlistDAO.deletePlaylistFromDatabase(playlistDTO.getId()));
+        Assertions.assertEquals("Error while deleting playlist " + playlistDTO.getId(), exception.getMessage());
+    }
 }

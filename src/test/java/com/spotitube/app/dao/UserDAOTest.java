@@ -135,4 +135,12 @@ public class UserDAOTest {
             userDAO.isAuthorized(TOKEN));
         Assertions.assertEquals("User is not authorized", exception.getMessage());
     }
+
+    @Test
+    public void getUsernameByTokenTest() throws SQLException, UserTokenException {
+        Mockito.when(statement.executeQuery()).thenReturn(set);
+        Mockito.when(set.next()).thenReturn(true);
+        Mockito.when(set.getString("username")).thenReturn(USERNAME);
+        Assertions.assertEquals(USERNAME, userDAO.getUsernameByToken(TOKEN));
+    }
 }

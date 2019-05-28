@@ -2,10 +2,11 @@ package com.spotitube.app.dto;
 
 import com.spotitube.app.DTO.PlaylistDTO;
 import com.spotitube.app.DTO.TrackDTO;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PlaylistDTOTest {
 
@@ -14,57 +15,90 @@ public class PlaylistDTOTest {
     private int id;
     private String name;
     private String ownerName;
-    private TrackDTO[] trackModel;
+    private boolean owner;
+    private TrackDTO[] trackDTO;
+    private int playlistlength;
 
     @BeforeEach
     public void setup() {
         id = 15;
         name = "Super playlist";
         ownerName = "true";
-        trackModel = new TrackDTO[0];
-        playlistDTO = new PlaylistDTO(id, name, true, ownerName, trackModel, 15);
+        trackDTO = new TrackDTO[0];
+        owner = true;
+        playlistlength = 30;
+        playlistDTO = new PlaylistDTO(id, name, owner, ownerName, trackDTO, playlistlength);
     }
 
 
     @Test
     public void getIdTest() {
-        assertEquals(playlistDTO.getId(), id);
+        Assertions.assertEquals(playlistDTO.getId(), id);
     }
 
     @Test
     public void setIdTest() {
         int newId = 20;
         playlistDTO.setId(newId);
-        assertEquals(playlistDTO.getId(), newId);
+        Assertions.assertEquals(playlistDTO.getId(), newId);
     }
 
     @Test
     public void getNameTest() {
-        assertEquals(playlistDTO.getName(), name);
+        Assertions.assertEquals(playlistDTO.getName(), name);
     }
 
     @Test
     public void setNameTest() {
         String newName = "Awesome test";
         playlistDTO.setName(newName);
-        assertEquals(playlistDTO.getName(), newName);
+        Assertions.assertEquals(playlistDTO.getName(), newName);
     }
 
     @Test
-    public void getOwnerTest() {
-        assertEquals(playlistDTO.getOwnerName(), ownerName);
+    public void getOwnerNameTest() {
+        Assertions.assertEquals(playlistDTO.getOwnerName(), ownerName);
     }
 
     @Test
-    public void setOwnerTest() {
+    public void setOwnerNameTest() {
         String newOwner = "false";
         playlistDTO.setOwnerName(newOwner);
-        assertEquals(playlistDTO.getOwnerName(), newOwner);
+        Assertions.assertEquals(playlistDTO.getOwnerName(), newOwner);
     }
 
     @Test
     public void getTracksTest() {
-        assertEquals(playlistDTO.getTracks(), trackModel);
+        Assertions.assertEquals(playlistDTO.getTracks(), trackDTO);
+    }
+
+    @Test
+    public void setTracksTest() {
+        TrackDTO[] dto = new TrackDTO[0];
+        playlistDTO.setTracks(dto);
+        Assertions.assertEquals(playlistDTO.getTracks(), dto);
+    }
+
+    @Test
+    public void getPlaylistLengthTest() {
+        Assertions.assertEquals(playlistDTO.getPlaylistLength(), playlistlength);
+    }
+
+    @Test
+    public void setPlaylistLengthTest() {
+        playlistDTO.setPlaylistLength(100);
+        Assertions.assertEquals(playlistDTO.getPlaylistLength(), 100);
+    }
+
+    @Test
+    public void getOwnerTest() {
+        Assertions.assertEquals(playlistDTO.getOwner(), owner);
+    }
+
+    @Test
+    public void setOwnerTest() {
+        playlistDTO.setOwner(false);
+        Assertions.assertFalse(playlistDTO.getOwner());
     }
 
 }
