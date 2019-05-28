@@ -6,7 +6,6 @@ import com.spotitube.app.dao.src.DatabaseConnection;
 import com.spotitube.app.dao.src.PlaylistHasTrackDAO;
 import com.spotitube.app.exceptions.NoDatabaseConnectionException;
 import com.spotitube.app.exceptions.PlaylistHasTrackException;
-import com.spotitube.app.model.src.TrackModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +30,7 @@ public class PlaylistHasTrackDAOTest {
 
     @BeforeAll
     public static void setupAll() {
-        playlistDTO = new PlaylistDTO(20, "testPlaylist", "true", new TrackModel[0]);
+        playlistDTO = new PlaylistDTO(20, "testPlaylist",true,  "true", new TrackDTO[0], 40);
         databaseConnection = Mockito.mock(DatabaseConnection.class);
         playlistHasTrackDAO = new PlaylistHasTrackDAO(databaseConnection);
     }

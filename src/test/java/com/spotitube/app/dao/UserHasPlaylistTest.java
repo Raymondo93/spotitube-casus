@@ -1,11 +1,11 @@
 package com.spotitube.app.dao;
 
 import com.spotitube.app.DTO.PlaylistDTO;
+import com.spotitube.app.DTO.TrackDTO;
 import com.spotitube.app.dao.src.DatabaseConnection;
 import com.spotitube.app.dao.src.UserHasPlaylistDAO;
 import com.spotitube.app.exceptions.NoDatabaseConnectionException;
 import com.spotitube.app.exceptions.UserHasPlaylistException;
-import com.spotitube.app.model.src.TrackModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ public class UserHasPlaylistTest {
 
     @BeforeAll
     public static void setupAll() {
-        playlistDTO = new PlaylistDTO(PLAYLISTID, "Testplaylist", "true", new TrackModel[0]);
+        playlistDTO = new PlaylistDTO(PLAYLISTID, "Testplaylist", true, "true", new TrackDTO[0], 80);
         databaseConnection = Mockito.mock(DatabaseConnection.class);
         userHasPlaylistDAO = new UserHasPlaylistDAO(databaseConnection);
     }

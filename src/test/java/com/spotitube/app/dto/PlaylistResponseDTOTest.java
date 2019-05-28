@@ -2,7 +2,7 @@ package com.spotitube.app.dto;
 
 import com.spotitube.app.DTO.PlaylistDTO;
 import com.spotitube.app.DTO.PlaylistResponseDTO;
-import com.spotitube.app.model.src.TrackModel;
+import com.spotitube.app.DTO.TrackDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,12 +18,12 @@ public class PlaylistResponseDTOTest {
     private final static int ID = 10;
     private final static String NAME = "testdto";
     private final static String OWNER = "true";
-    private static final TrackModel[] TRACKS = new TrackModel[0];
+    private static final TrackDTO[] TRACKS = new TrackDTO[0];
 
     @BeforeEach
     public void setUp(){
         playlistResponseDTO = new PlaylistResponseDTO(playlistDTO, LENGTH);
-        dto = new PlaylistDTO(ID, NAME, OWNER, TRACKS);
+        dto = new PlaylistDTO(ID, NAME, true, OWNER, TRACKS, 20);
     }
 
     @Test
@@ -34,7 +34,7 @@ public class PlaylistResponseDTOTest {
     @Test
     public void setPlaylistTest() {
         PlaylistDTO[] playlistDTOS = new PlaylistDTO[2];
-        PlaylistDTO playlist = new PlaylistDTO(11, "another test dto" ,"true", new TrackModel[0]);
+        PlaylistDTO playlist = new PlaylistDTO(11, "another test dto" ,true , "true", new TrackDTO[0], 40);
         playlistDTOS[0] = playlistDTO[0];
         playlistDTOS[1] = playlist;
         playlistResponseDTO.setPlaylists(playlistDTOS);

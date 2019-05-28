@@ -1,7 +1,7 @@
 package com.spotitube.app.dto;
 
 import com.spotitube.app.DTO.PlaylistDTO;
-import com.spotitube.app.model.src.TrackModel;
+import com.spotitube.app.DTO.TrackDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,16 +13,16 @@ public class PlaylistDTOTest {
 
     private int id;
     private String name;
-    private String owner;
-    private TrackModel[] trackModel;
+    private String ownerName;
+    private TrackDTO[] trackModel;
 
     @BeforeEach
     public void setup() {
         id = 15;
         name = "Super playlist";
-        owner = "true";
-        trackModel = new TrackModel[0];
-        playlistDTO = new PlaylistDTO(id, name, owner, trackModel);
+        ownerName = "true";
+        trackModel = new TrackDTO[0];
+        playlistDTO = new PlaylistDTO(id, name, true, ownerName, trackModel, 15);
     }
 
 
@@ -52,14 +52,14 @@ public class PlaylistDTOTest {
 
     @Test
     public void getOwnerTest() {
-        assertEquals(playlistDTO.getOwner(), owner);
+        assertEquals(playlistDTO.getOwnerName(), ownerName);
     }
 
     @Test
     public void setOwnerTest() {
         String newOwner = "false";
-        playlistDTO.setOwner(newOwner);
-        assertEquals(playlistDTO.getOwner(), newOwner);
+        playlistDTO.setOwnerName(newOwner);
+        assertEquals(playlistDTO.getOwnerName(), newOwner);
     }
 
     @Test

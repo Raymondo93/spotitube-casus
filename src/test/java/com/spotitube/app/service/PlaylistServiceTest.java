@@ -17,11 +17,9 @@ import com.spotitube.app.exceptions.PlaylistException;
 import com.spotitube.app.exceptions.PlaylistHasTrackException;
 import com.spotitube.app.exceptions.TracksException;
 import com.spotitube.app.exceptions.UserHasPlaylistException;
-import com.spotitube.app.model.src.TrackModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import javax.ws.rs.core.Response;
@@ -58,7 +56,7 @@ public class PlaylistServiceTest {
         service.setTrackDAO(trackDAO);
         service.setPlaylistHasTrackDAO(playlistHasTrackDAO);
         service.setUserDAO(userDAO);
-        playlistDTO = new PlaylistDTO(12, "testDTO", "true", new TrackModel[0]);
+        playlistDTO = new PlaylistDTO(12, "testDTO", true, "true", new TrackDTO[0], 980);
         trackDTO = new TrackDTO(1, "testTrack", "Test performer", 200, "testAlbum", 0, null, null, false);
     }
 
