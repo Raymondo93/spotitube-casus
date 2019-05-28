@@ -27,8 +27,6 @@ import com.spotitube.app.exceptions.PlaylistHasTrackException;
 import com.spotitube.app.exceptions.TracksException;
 import com.spotitube.app.exceptions.UserHasPlaylistException;
 import com.spotitube.app.exceptions.UserTokenException;
-import com.spotitube.app.model.IPlaylistModel;
-import com.spotitube.app.model.src.TrackModel;
 import java.util.List;
 
 @Path("/playlists")
@@ -233,13 +231,14 @@ public class PlaylistService {
      * @return -> array of playlists
      */
     private PlaylistResponseDTO getPlaylists(String token) throws PlaylistException, UserTokenException {
-        List<IPlaylistModel> playlistModels = playlistDAO.getPlaylists();
-        PlaylistDTO[] playlistDTOS = new PlaylistDTO[playlistModels.size()];
+        List<PlaylistDTO> playlistList = playlistDAO.getPlaylists();
+        PlaylistDTO[] playlistDTOS = playlistList.toArray(new PlaylistDTO[playlistList.size()]);
         int playtime = 0;
         for(int i = 0; i < playlistDTOS.length; ++i){
-            String owner = playlistModels.get(i).getOwnerName().equals(userDAO.getUsernameByToken(token)) ? "true" : "false";
-            playlistDTOS[i] = new PlaylistDTO(playlistModels.get(i).getId(), playlistModels.get(i).getName() , owner, new TrackModel[0]);
-            playtime += playlistModels.get(i).getPlaylistLength();
+            boolean owner = playlistDTOS[i].getOwnerName().equals(userDAO.getUsernameByToken(token));
+            playlistDTOS[i].setOwner(owner);
+            playlistDTOS[i].setTracks(new TrackDTO[0]);
+            playtime += playlistDTOS[i].getPlaylistLength();
         }
         return new PlaylistResponseDTO(playlistDTOS, playtime);
     }

@@ -1,24 +1,32 @@
 package com.spotitube.app.DTO;
 
-
-import com.spotitube.app.model.src.TrackModel;
-
 public class PlaylistDTO {
 
     private int id;
     private String name;
-    private String owner;
-    private TrackModel[] tracks;
+    private boolean owner;
+    private String ownerName;
+    private TrackDTO[] tracks;
+    private int playlistLength;
 
     public PlaylistDTO() {
 
     }
 
-    public PlaylistDTO(int id, String name, String owner, TrackModel[] tracks){
+    public PlaylistDTO(int id, String name, boolean owner, String ownerName, TrackDTO[] tracks, int playlistLength){
         this.id = id;
         this.name = name;
         this.owner = owner;
+        this.ownerName = ownerName;
         this.tracks = tracks;
+        this.playlistLength = playlistLength;
+    }
+
+    public PlaylistDTO(int id, String name, String ownerName, int playlistLength) {
+        this.id = id;
+        this.name = name;
+        this.ownerName = ownerName;
+        this.playlistLength = playlistLength;
     }
 
     public int getId() {
@@ -37,19 +45,35 @@ public class PlaylistDTO {
         this.name = name;
     }
 
-    public String getOwner() {
-        return owner;
+    public String getOwnerName() {
+        return ownerName;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setOwnerName(String owner) {
+        this.ownerName = owner;
     }
 
-    public TrackModel[] getTracks() {
+    public TrackDTO[] getTracks() {
         return tracks;
     }
 
-    public void setTracks(TrackModel[] tracks) {
+    public void setTracks(TrackDTO[] tracks) {
         this.tracks = tracks;
+    }
+
+    public int getPlaylistLength() {
+        return playlistLength;
+    }
+
+    public void setPlaylistLength(int playlistLength) {
+        this.playlistLength = playlistLength;
+    }
+
+    public boolean getOwner() {
+        return owner;
+    }
+
+    public void setOwner(boolean owner) {
+        this.owner = owner;
     }
 }

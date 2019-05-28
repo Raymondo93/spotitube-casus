@@ -8,8 +8,6 @@ import com.spotitube.app.dao.IDatabaseConnection;
 import com.spotitube.app.dao.IPlaylistDAO;
 import com.spotitube.app.exceptions.NoDatabaseConnectionException;
 import com.spotitube.app.exceptions.PlaylistException;
-import com.spotitube.app.model.IPlaylistModel;
-import com.spotitube.app.model.src.PlaylistModel;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,20 +28,20 @@ public class PlaylistDAO implements IPlaylistDAO {
     /**
      *  {@inheritDoc}
      */
-    public List<IPlaylistModel> getPlaylists() throws PlaylistException {
+    public List<PlaylistDTO> getPlaylists() throws PlaylistException {
         String query = "select  playlist.id, playlist.name, playlist.owner, sum(track.duration) as playtime\n" +
             "from playlist  \n" +
             "\tleft join playlist_has_track on playlist.id = playlist_has_track.playlist_id\n" +
             "\tleft join track on track.id = playlist_has_track.track_id\n" +
             "group by playlist.id";
-        List<IPlaylistModel> playlists = new ArrayList<>();
+        List<PlaylistDTO> playlists = new ArrayList<>();
         try (
             Connection connection = databaseConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet set = statement.executeQuery();
         ){
             while(set.next()) {
-                playlists.add(new PlaylistModel(set.getInt("id"), set.getString("name"),
+                playlists.add(new PlaylistDTO(set.getInt("id"), set.getString("name"),
                     set.getString("owner"), set.getInt("playtime")));
             }
             return playlists;

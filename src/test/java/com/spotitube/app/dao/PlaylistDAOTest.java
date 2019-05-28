@@ -1,12 +1,11 @@
 package com.spotitube.app.dao;
 
 import com.spotitube.app.DTO.PlaylistDTO;
+import com.spotitube.app.DTO.TrackDTO;
 import com.spotitube.app.dao.src.DatabaseConnection;
 import com.spotitube.app.dao.src.PlaylistDAO;
 import com.spotitube.app.exceptions.NoDatabaseConnectionException;
 import com.spotitube.app.exceptions.PlaylistException;
-import com.spotitube.app.model.IPlaylistModel;
-import com.spotitube.app.model.src.TrackModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +31,7 @@ public class PlaylistDAOTest {
 
     @BeforeAll
     public static void setupAll() {
-        playlistDTO = new PlaylistDTO(20, "testPlaylist", "true", new TrackModel[0]);
+        playlistDTO = new PlaylistDTO(20, "testPlaylist", false, "bert", new TrackDTO[0], 15);
         databaseConnection = Mockito.mock(DatabaseConnection.class);
         playlistDAO = new PlaylistDAO(databaseConnection);
     }
@@ -49,7 +48,7 @@ public class PlaylistDAOTest {
 
     @Test
     public void getPlaylistsTest() throws SQLException, PlaylistException {
-        List<IPlaylistModel> playlists = new ArrayList<>();
+        List<PlaylistDTO> playlists = new ArrayList<>();
 
         Mockito.when(statement.executeQuery()).thenReturn(set);
 
