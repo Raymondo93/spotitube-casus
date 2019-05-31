@@ -11,8 +11,12 @@ import javax.ws.rs.core.Response;
 import com.spotitube.app.DTO.UserLoginDTO;
 import com.spotitube.app.DTO.UserLoginResponseDTO;
 import com.spotitube.app.dao.IUserDAO;
+import com.spotitube.app.dao.src.DatabaseConnection;
+import com.spotitube.app.dao.src.UserDAO;
+import com.spotitube.app.entity.User;
 import com.spotitube.app.exceptions.UserOrPasswordFailException;
 import com.spotitube.app.exceptions.UserTokenException;
+import com.spotitube.app.persistence.UserPersistence;
 
 import java.util.Date;
 
@@ -22,10 +26,12 @@ import java.util.Date;
 public class LoginService {
 
 
-    private IUserDAO userDAO;
+    private UserPersistence userPersistence;
 
     @Inject
-    public void setLoginDAO(IUserDAO userDAO) {this.userDAO = userDAO;}
+    public void setLoginPersistence(UserPersistence userPersistence) {
+        this.userPersistence = userPersistence;
+    }
 
     /**
      * Login user
@@ -38,12 +44,13 @@ public class LoginService {
     public Response loginUser(UserLoginDTO dto) {
         UserLoginResponseDTO loginResponseDTO = new UserLoginResponseDTO();
         try {
-            userDAO.loginUser(dto);
+            userPersistence = new UserPersistence();
+            userPersistence.loginUser(dto);
             loginResponseDTO.setUser(dto.getUser());
             loginResponseDTO.setToken(generateToken(dto.getUser()));
-            userDAO.saveUserToken(loginResponseDTO);
+            userPersistence.saveUserToken(loginResponseDTO);
             return Response.ok().entity(loginResponseDTO).build();
-        } catch (UserOrPasswordFailException | UserTokenException e) {
+        } catch (UserOrPasswordFailException e) {
             e.printStackTrace();
             return Response.status(401).build();
         }

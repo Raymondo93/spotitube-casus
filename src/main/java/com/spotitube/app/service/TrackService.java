@@ -5,6 +5,7 @@ import com.spotitube.app.dao.ITrackDAO;
 import com.spotitube.app.dao.IUserDAO;
 import com.spotitube.app.exceptions.NotAuthorizedException;
 import com.spotitube.app.exceptions.TracksException;
+import com.spotitube.app.persistence.UserPersistence;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -21,6 +22,7 @@ public class TrackService {
 
     private ITrackDAO trackDAO;
     private IUserDAO userDAO;
+    private UserPersistence userPersistence;
 
     /**
      * Get all the playlists those are not in the playlist. First check is to authorize
@@ -36,7 +38,8 @@ public class TrackService {
         @QueryParam("token") String token
     ) {
         try {
-            if(userDAO.isAuthorized(token)) {
+//            if(userDAO.isAuthorized(token)) {
+            if(userPersistence.isAuthorized(token)) {
                 List<TrackDTO> trackDTOS = trackDAO.getAllTracksNotInPlaylist(playlistID);
                 TrackDTO[] responseDTO = new TrackDTO[trackDTOS.size()];
                 for (int i = 0; i < trackDTOS.size(); ++i) {
@@ -65,6 +68,11 @@ public class TrackService {
     @Inject
     public void setUserDAO(IUserDAO userDAO) {
         this.userDAO = userDAO;
+    }
+
+    @Inject
+    public void setUserPersistence(UserPersistence userPersistence) {
+        this.userPersistence = userPersistence;
     }
 
 }
